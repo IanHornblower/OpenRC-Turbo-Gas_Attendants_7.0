@@ -11,4 +11,16 @@ public class Swipe extends Gamepad {
 
     }
 
+    public boolean Pinch() throws InterruptedException {
+
+        boolean ret = false;
+
+        wait(100);
+
+        return false;
+
+    }
+
+
+
 }

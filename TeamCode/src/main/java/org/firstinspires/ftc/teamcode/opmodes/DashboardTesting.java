@@ -24,11 +24,13 @@ public class DashboardTesting extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
 
-        FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
+        //FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
 
+        /*
         camera.initWebCamera();
         camera.initPipeline();
         camera.startCamera();
+         */
 
         telemetry.addLine("Waiting for start");
         telemetry.update();
@@ -42,7 +44,7 @@ public class DashboardTesting extends LinearOpMode {
         telemetry.update();
 
         while(opModeIsActive()) {
-            camera.startCameraStream(0);
+            //camera.startCameraStream(0);
 
 
             TelemetryPacket packet = new TelemetryPacket();
@@ -52,14 +54,13 @@ public class DashboardTesting extends LinearOpMode {
 
             h -= Math.toRadians(gamepad1.right_stick_x/1000);
 
-            telemetry.addData("Location", camera.sDeterminePosition());
+            //telemetry.addData("Location", camera.sDeterminePosition());
 
-            //Field field = new Field(packet);
+            Field field = new Field(packet);
 
-            //field.createCircularRobot(new Pose2D(x, y, h));
+            field.createCircularRobot(new Pose2D(x, y, h));
 
-
-            //dashboard.sendTelemetryPacket(field.getPacket());
+            dashboard.sendTelemetryPacket(field.getPacket());
         }
     }
 }
