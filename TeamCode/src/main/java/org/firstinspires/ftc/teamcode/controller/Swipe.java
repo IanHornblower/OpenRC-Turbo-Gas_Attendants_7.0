@@ -17,6 +17,9 @@ public class Swipe extends Gamepad {
 
         wait(100);
 
+        System.out.println("cope");
+
+
         return false;
 
     }

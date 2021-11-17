@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.teamcode.controller.Controller;
-import org.firstinspires.ftc.teamcode.controller.Swipe;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
-
-import java.sql.Time;
+import org.firstinspires.ftc.teamcode.hardware.ExpansionHubExt.ExpansionHubEx;
 
 @Config
 @TeleOp(name = "Testing Controller", group = "Testing")
@@ -23,13 +20,14 @@ public class ControllerTest extends LinearOpMode {
     public long time = 0;
     public long cycleLength = 0;
     public long timeRunning = 0;
-
+    ExpansionHubEx expansionHub;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(dashTelemeryEnabled) telemetry = dashboard.getTelemetry();
+        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
 
         telemetry.addLine("Ready");
         telemetry.update();
@@ -63,10 +61,19 @@ public class ControllerTest extends LinearOpMode {
             telemetry.addData("Battery Voltage", voltage());
             telemetry.addData("Battery Apx. %", Battery.percentage(vSensor));
 
-            if (gamepad1.cross)
+            if (gamepad1.right_bumper)
                 gamepad1.rumble(100);
 
+            // Control Hub LED Testing
+            if (gamepad1.cross) expansionHub.setLedColor(0,0,255);
+            else if (gamepad1.circle) expansionHub.setLedColor(255,0,0);
+            else if (gamepad1.square) expansionHub.setLedColor(255,175,175);
+            else if (gamepad1.triangle) expansionHub.setLedColor(0,255,0);
+            else expansionHub.setLedColor(255,255,255);
+
             telemetry.update();
+
+
 
         }
     }
