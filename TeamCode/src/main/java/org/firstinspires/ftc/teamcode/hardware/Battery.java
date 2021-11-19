@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import com.qualcomm.robotcore.hardware.VoltageSensor;
+import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
 
-public abstract class Battery {
+public class Battery {
 
-    public static double percentage(VoltageSensor vSensor) {
+    public static ExpansionHubEx expansionHub;
+
+
+    public static double percentage() {
         // Returns 0 if Battery.voltage() returns ∞
         double result = 0;
-        double v = vSensor.getVoltage();
+        double v = expansionHub.read12vMonitor(ExpansionHubEx.VoltageUnits.VOLTS);
         if(v != Double.POSITIVE_INFINITY) {
             result = (v-10)*20;
             if(result < 0)

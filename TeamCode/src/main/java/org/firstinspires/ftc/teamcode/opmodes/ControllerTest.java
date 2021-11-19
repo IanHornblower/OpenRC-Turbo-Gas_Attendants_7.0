@@ -8,27 +8,32 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
-import org.firstinspires.ftc.teamcode.hardware.ExpansionHubExt.ExpansionHubEx;
+import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
 
+@TeleOp
 @Config
-@TeleOp(name = "Testing Controller", group = "Testing")
 public class ControllerTest extends LinearOpMode {
 
-    protected VoltageSensor vSensor =  hardwareMap.voltageSensor.get("Expansion Hub 1");
-
-    public static boolean dashTelemeryEnabled = false;
+    public static boolean DashTelemetryEnabled = false;
     public long time = 0;
     public long cycleLength = 0;
     public long timeRunning = 0;
+    public static int BuildNumber = 13;
+    public static String HubName = "Expansion Hub 1";
+
     ExpansionHubEx expansionHub;
 
     @Override
     public void runOpMode() throws InterruptedException {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
-        if(dashTelemeryEnabled) telemetry = dashboard.getTelemetry();
-        expansionHub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 1");
+        if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
+        expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
 
+        Battery.expansionHub = expansionHub;
+
+        telemetry.addLine("Controller Test");
+        telemetry.addData("Version", BuildNumber);
         telemetry.addLine("Ready");
         telemetry.update();
 
@@ -59,10 +64,16 @@ public class ControllerTest extends LinearOpMode {
             telemetry.addData("Loop Time", cycleLength);
             telemetry.addData("Time Running", (int)Math.floor((double)(timeRunning/1000)));
             telemetry.addData("Battery Voltage", voltage());
-            telemetry.addData("Battery Apx. %", Battery.percentage(vSensor));
+            telemetry.addData("Battery Apx. %", Battery.percentage());
 
             if (gamepad1.right_bumper)
                 gamepad1.rumble(100);
+
+            if (gamepad1.options || gamepad2.options) {
+               gamepad1.setGamepadId(2);
+               //gamepad2.setGamepadId(1);
+            }
+
 
             // Control Hub LED Testing
             if (gamepad1.cross) expansionHub.setLedColor(0,0,255);
