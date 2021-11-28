@@ -17,7 +17,7 @@ import java.util.List;
 // Credits to team 7303 RoboAvatars, adjusted by team 3954 Pink to the Future, and team 8711 Gas Attendants
 
 public class ContourPipeline extends OpenCvPipeline {
-    Scalar HOT_PINK = new Scalar(196, 23, 112);
+    Scalar HOT_PINK = new Scalar(255, 255, 255);
 
     // Pink, the default color                         Y      Cr     Cb    (Do not change Y)
     public static Scalar scalarLowerYCrCb = new Scalar(0.0, 150.0, 120.0);
@@ -63,8 +63,8 @@ public class ContourPipeline extends OpenCvPipeline {
 
     public void ConfigureScalarLower(double Y, double Cr, double Cb) { scalarLowerYCrCb = new Scalar(Y, Cr, Cb); }
     public void ConfigureScalarUpper(double Y, double Cr, double Cb) { scalarUpperYCrCb = new Scalar(Y, Cr, Cb); }
-    public void ConfigureScalarLower(int Y, int Cr, int Cb) { scalarLowerYCrCb = new Scalar(Y, Cr, Cb); }
-    public void ConfigureScalarUpper(int Y, int Cr, int Cb) { scalarUpperYCrCb = new Scalar(Y, Cr, Cb); }
+    //public void ConfigureScalarLower(int Y, int Cr, int Cb) { scalarLowerYCrCb = new Scalar(Y, Cr, Cb); }
+    //public void ConfigureScalarUpper(int Y, int Cr, int Cb) { scalarUpperYCrCb = new Scalar(Y, Cr, Cb); }
 
     @Override
     public Mat processFrame(Mat input) {
@@ -73,15 +73,15 @@ public class ContourPipeline extends OpenCvPipeline {
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2YCrCb);
             Core.inRange(mat, scalarLowerYCrCb, scalarUpperYCrCb, processed);
 
-
             // Draw Seperation Lines
             // A --> B
-            Imgproc.rectangle(output, new Point(FreightFrenzyCamera.abVerticalLine, FreightFrenzyCamera.topBorderOffset), new Point(FreightFrenzyCamera.abVerticalLine, FreightFrenzyCamera.lineLength), HOT_PINK, 2);
+            Imgproc.rectangle(output, new Point(FreightFrenzyCamera.abVerticalLine, FreightFrenzyCamera.topBorderOffset), new Point(FreightFrenzyCamera.abVerticalLine, FreightFrenzyCamera.lineLength), scalarLowerYCrCb, 2);
             // B --> C
-            Imgproc.rectangle(output, new Point(FreightFrenzyCamera.bcVerticalLine, FreightFrenzyCamera.topBorderOffset), new Point(FreightFrenzyCamera.bcVerticalLine, FreightFrenzyCamera.lineLength), HOT_PINK, 2);
+            Imgproc.rectangle(output, new Point(FreightFrenzyCamera.bcVerticalLine, FreightFrenzyCamera.topBorderOffset), new Point(FreightFrenzyCamera.bcVerticalLine, FreightFrenzyCamera.lineLength), scalarUpperYCrCb, 2);
 
             Imgproc.morphologyEx(processed, processed, Imgproc.MORPH_OPEN, new Mat());
             Imgproc.morphologyEx(processed, processed, Imgproc.MORPH_CLOSE, new Mat());
+            Imgproc.morphologyEx(processed, processed, Imgproc.MORPH_DILATE, new Mat());
             // GaussianBlur
             Imgproc.GaussianBlur(processed, processed, new Size(5.0, 15.0), 0.00);
 
