@@ -18,34 +18,32 @@ import org.openftc.easyopencv.OpenCvInternalCamera2;
 @Autonomous(name = "DashboardTest", group = "Testing")
 public class DashboardTesting extends LinearOpMode {
 
-    @Override
     public void runOpMode() throws InterruptedException {
 
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
 
-        //FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
-
-        /*
-        camera.initWebCamera();
-        camera.initPipeline();
-        camera.startCamera();
-         */
-
-        telemetry.addLine("Waiting for start");
-        telemetry.update();
+        FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
 
         double x = 0, y = 0, h = 0;
 
-        waitForStart();
-
-        telemetry.clear();
-        telemetry.addLine("Active");
+        telemetry.addLine("Waiting for Init");
         telemetry.update();
 
-        while(opModeIsActive()) {
-            //camera.startCameraStream(0);
+        camera.initWebCamera();
+        camera.initPipeline();
+        camera.startCamera();
 
+        camera.startCameraStream(0);
+
+        telemetry.clear();
+        telemetry.addLine("Camera Initialized");
+        telemetry.update();
+
+        waitForStart();
+
+        while(opModeIsActive()) {
+            //camera.refreshScalars();
 
             TelemetryPacket packet = new TelemetryPacket();
 
@@ -54,13 +52,15 @@ public class DashboardTesting extends LinearOpMode {
 
             h -= Math.toRadians(gamepad1.right_stick_x/1000);
 
-            //telemetry.addData("Location", camera.sDeterminePosition());
+            telemetry.addData("Location", camera.sDeterminePosition());
+            telemetry.update();
 
-            Field field = new Field(packet);
+            //Field field = new Field(packet);
 
-            field.createCircularRobot(new Pose2D(x, y, h));
+            //field.createCircularRobot(new Pose2D(x, y, h));
 
-            dashboard.sendTelemetryPacket(field.getPacket());
+
+            //dashboard.sendTelemetryPacket(field.getPacket());
         }
     }
 }

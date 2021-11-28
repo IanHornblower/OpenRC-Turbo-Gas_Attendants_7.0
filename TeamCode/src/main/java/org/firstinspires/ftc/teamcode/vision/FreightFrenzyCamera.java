@@ -18,18 +18,18 @@ public class FreightFrenzyCamera {
 
     // TODO: Add Vertical Lines for Object Divisions
 
-    public enum position{A, B, C, ABSENT};
+    public enum position{A, B, C, ABSENT}
 
     private OpenCvCamera cam;
     ContourPipeline pipeline;
     HardwareMap hwMap;
 
-    public static int CAMERA_WIDTH  = 640; // width  of wanted camera resolution
-    public static int CAMERA_HEIGHT = 360; // height of wanted camera resolution
+    private static int CAMERA_WIDTH  = 640; // width  of wanted camera resolution
+    private static int CAMERA_HEIGHT = 360; // height of wanted camera resolution
 
-    public static int lowestBlobArea = 2000;
-    public static int abVerticalLine = 213;
-    public static int bcVerticalLine = 426;
+    public static int lowestBlobArea = 200;
+    public static int abVerticalLine = 213; //213
+    public static int bcVerticalLine = 426; // 426
 
     public static int topBorderOffset = 5;
     public static int lineLength = 335;
@@ -40,7 +40,7 @@ public class FreightFrenzyCamera {
     public static int borderBottomY = 25;   //amount of pixels from the bottom of the cam to skip
 
     // Color Range (Pink)                              Y      Cr     Cb
-    private static Scalar scalarLowerYCrCb = new Scalar(  0.0, 0.0, 0.0 );
+    private static Scalar scalarLowerYCrCb = new Scalar(195.0, 0, 0);
     private static Scalar scalarUpperYCrCb = new Scalar(255.0, 255.0, 255.0);
 
     public FreightFrenzyCamera(HardwareMap hwMap) {
@@ -76,6 +76,11 @@ public class FreightFrenzyCamera {
         pipeline.ConfigureScalarUpper(scalarUpperYCrCb.val[0],scalarUpperYCrCb.val[1],scalarUpperYCrCb.val[2]);
     }
 
+    public void refreshScalars() {
+        pipeline.ConfigureScalarLower(scalarLowerYCrCb.val[0],scalarLowerYCrCb.val[1],scalarLowerYCrCb.val[2]);
+        pipeline.ConfigureScalarUpper(scalarUpperYCrCb.val[0],scalarUpperYCrCb.val[1],scalarUpperYCrCb.val[2]);
+    }
+
     public void startCamera() {
         cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -92,7 +97,7 @@ public class FreightFrenzyCamera {
         FtcDashboard.getInstance().startCameraStream(cam, fps);
     }
 
-    public Enum determinePosition() {
+    public Enum<position> determinePosition() {
         if(pipeline.getRectArea() > lowestBlobArea){
             if(pipeline.getRectMidpointX() > bcVerticalLine){
                 return position.C;
