@@ -19,9 +19,11 @@ public class Battery {
     }
 
     public static int timeRemaining(String timeUnit) {
-        float p = (float)percentage();
-        float a = (float)currentDraw();
-        double ret = Math.round((p/100)*60*(BatteryCapacity/a));
+        int p = percentage();
+        double a = currentDraw();
+        double ret;
+        if ( a < 1 ) return -1;
+        ret = Math.round(((float)p/100)*60*(BatteryCapacity/a));
         if (Objects.equals(timeUnit, "HOURS")) {
             ret = Math.round(ret/60);
         } else if (Objects.equals(timeUnit, "SECONDS")) {
@@ -31,10 +33,12 @@ public class Battery {
     }
 
     public static double currentDraw() {
+        if (expansionHub == null) throw new NullPointerException("expansionHub is Not Defined");
         return expansionHub.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS);
     }
 
     public static double voltage() {
+        if (expansionHub == null) throw new NullPointerException("expansionHub is Not Defined");
         return Math.round(expansionHub.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS));
     }
 
