@@ -129,10 +129,10 @@ public class ControllerTest extends LinearOpMode {
             telemetry.addData("2 Finger Y", gamepad1.touchpad_finger_2_y);
             telemetry.addData("Gamepad ID", gamepad1.getUser());
             telemetry.addData("Loop Time", cycleLength);
-            telemetry.addData("Time Running", (int)Math.floor((double)(timeRunning/1000)));
+            telemetry.addData("Time Running", (int)Math.floor((double)(timeRunning/1000))+"ms");
             telemetry.addData("Battery Voltage", Battery.voltage());
-            telemetry.addData("Battery Current", Battery.currentDraw());
-            telemetry.addData("Battery Apx. %", Battery.percentage());
+            telemetry.addData("Battery Current", Math.round(Battery.currentDraw())+"mA");
+            telemetry.addData("Battery Apx. %", Battery.percentage()+"%");
             telemetry.addData("Battery Time", Battery.timeRemaining(timeUnit));
             if(ImperialUnits)
                 temp = expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.FAHRENHEIT) + "°F";
