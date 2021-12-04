@@ -18,29 +18,29 @@ public class spinMotor {
 
     public spinMotor(Robot robot) {
         this.robot = robot;
-        this.right = robot.getRight();
-        this.left = robot.getLeft();
+        this.right = robot.getDuckRight();
+        this.left = robot.getDuckLeft();
     }
 
     public void run(boolean run) {
         if(run) {
-            robot.getLeft().setPower(-speed*leftMult);
-            robot.getRight().setPower(speed*rightMult);
+            robot.getDuckLeft().setPower(-speed*leftMult);
+            robot.getDuckRight().setPower(speed*rightMult);
         }
         else {
-            robot.getLeft().setPower(0);
-            robot.getRight().setPower(0);
+            robot.getDuckLeft().setPower(0);
+            robot.getDuckRight().setPower(0);
         }
     }
 
     public void reverse(boolean run) {
         if(run) {
-            robot.getLeft().setPower(speed*leftMult);
-            robot.getRight().setPower(-speed*rightMult);
+            robot.getDuckLeft().setPower(speed*leftMult);
+            robot.getDuckRight().setPower(-speed*rightMult);
         }
         else {
-            robot.getLeft().setPower(0);
-            robot.getRight().setPower(0);
+            robot.getDuckLeft().setPower(0);
+            robot.getDuckRight().setPower(0);
         }
     }
 

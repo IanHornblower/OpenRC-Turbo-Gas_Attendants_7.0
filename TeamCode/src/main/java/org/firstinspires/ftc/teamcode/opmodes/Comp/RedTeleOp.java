@@ -119,11 +119,6 @@ public class RedTeleOp extends LinearOpMode {
 
             robot.getLift().setPower(gamepad2.left_stick_y);
 
-            if(gamepad2.left_trigger > 0.1) {
-                robot.getLeft().setPower(-1);
-                robot.getLeft().setPower(1);
-            }
-
             robot.intakeSys.reverse(gamepad2.left_trigger > 0.1);
 
             robot.intakeSys.run(gamepad2.right_trigger > 0.1);
