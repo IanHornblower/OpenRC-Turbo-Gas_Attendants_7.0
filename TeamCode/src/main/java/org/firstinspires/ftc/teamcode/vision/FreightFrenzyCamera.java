@@ -93,11 +93,15 @@ public class FreightFrenzyCamera {
         });
     }
 
+    public OpenCvCamera getCamera() {
+        return cam;
+    }
+
     public void startCameraStream(int fps) {
         FtcDashboard.getInstance().startCameraStream(cam, fps);
     }
 
-    public Enum<position> determinePosition() {
+    public position determinePosition() {
         if(pipeline.getRectArea() > lowestBlobArea){
             if(pipeline.getRectMidpointX() > bcVerticalLine){
                 return position.C;

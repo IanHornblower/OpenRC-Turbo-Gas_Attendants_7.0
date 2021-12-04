@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+    package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,7 +17,7 @@ import org.firstinspires.ftc.teamcode.util.Color;
 
 import java.math.BigInteger;
 
-
+@Disabled
 @TeleOp
 @Config
 public class TempTest extends LinearOpMode {
@@ -29,7 +30,8 @@ public class TempTest extends LinearOpMode {
     public static String HubName = "Expansion Hub 1";
     public static boolean ImperialUnits = false;
     public static boolean StressTest = false;
-    protected int stressNum = 1;
+    protected long stressNum = 0;
+    int i = 0;
     ExpansionHubEx expansionHub;
 
     @Override
@@ -69,6 +71,7 @@ public class TempTest extends LinearOpMode {
             telemetry.addData("Battery Current", Math.round(Battery.currentDraw())+"mA");
             telemetry.addData("Battery Apx. %", Battery.percentage()+"%");
             if (StressTest) telemetry.addData("Stress Test Number", stressNum);
+            if (StressTest) telemetry.addData("Stress Test Iteration", i);
             if(ImperialUnits)
                 temp = expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.FAHRENHEIT) + "°F";
             else temp = expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.CELSIUS) + "°C";
@@ -77,10 +80,8 @@ public class TempTest extends LinearOpMode {
             telemetry.update();
 
             if (StressTest) {
-                if (stressNum < 1836311903) {
-                    //stressNum = fib(stressNum);
-                    stressNum = stressNum+stressNum;
-                } else stressNum = 1;
+                stressNum = Long.parseLong(String.valueOf(fib(new BigInteger(String.valueOf(i)))));
+                i++;
             }
 
 
@@ -88,18 +89,10 @@ public class TempTest extends LinearOpMode {
         }
     }
 
-    static int fib(int n)
-    {
-        int a = 0, b = 1, c;
-        if (n == 0)
-            return a;
-        for (int i = 2; i <= n; i++)
-        {
-            c = a + b;
-            a = b;
-            b = c;
-        }
-        return b;
+    public static BigInteger fib(BigInteger n) {
+        if (n.compareTo(BigInteger.ONE) == -1 || n.compareTo(BigInteger.ONE) == 0 ) return n;
+        else
+            return fib(n.subtract(BigInteger.ONE)).add(fib(n.subtract(BigInteger.ONE).subtract(BigInteger.ONE)));
     }
 
 }

@@ -48,6 +48,15 @@ public class DriveTrain {
                 turn);
     }
 
+    public void driveFieldCentric(double x, double y, double turn, double modTheta) {
+        Point vector = new Point(x, y);
+
+        calculatePosition(
+                vector.hypot(),
+                vector.atan2() - robot.pos.getHeading()+modTheta + adjustedAngle,
+                turn);
+    }
+
     public void calculatePosition(double dr, double theta, double turn) {
         double sin = Math.sin(theta);
         double cos = Math.cos(theta);
