@@ -1,21 +1,18 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import android.os.health.ServiceHealthStats;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.math.Angle;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
-
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 public class Robot extends OpMode {
     private DcMotor backLeft, backRight, frontLeft, frontRight;
@@ -23,6 +20,13 @@ public class Robot extends OpMode {
     private DcMotor leftEncoder, rightEncoder, lateralEncoder;
 
     private DcMotor liftMotor;
+    private Servo boxServo;
+
+    private DcMotor intake;
+    private Servo intakeServo;
+
+    DcMotor left;
+    DcMotor right;
 
     private BNO055IMU imu;
     private Orientation angles;
@@ -32,7 +36,9 @@ public class Robot extends OpMode {
     public HardwareMap hwMap;
     public DriveTrain DriveTrain;
     public IMU IMU;
-    public liftMotor lift;
+    public org.firstinspires.ftc.teamcode.hardware.lift lift;
+    public intake intakeSys;
+    public spinMotor spinMotor;
 
     public enum controlType{ROBOT, FIELD}
 
@@ -77,6 +83,22 @@ public class Robot extends OpMode {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        boxServo = hardwareMap.servo.get("boxServo");
+
+        intake = hardwareMap.dcMotor.get("intake");
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        //intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        intakeServo = hardwareMap.servo.get("intakeServo");
+
+        left = hardwareMap.dcMotor.get("left");
+        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        right = hardwareMap.dcMotor.get("right");
+        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         lateralEncoder = frontLeft;
         //lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -102,12 +124,33 @@ public class Robot extends OpMode {
 
         DriveTrain = new DriveTrain(this);
         IMU = new IMU(imu);
-        lift = new liftMotor(this);
-
+        lift = new lift(this);
+        intakeSys = new intake(this);
+        spinMotor = new spinMotor(this);
     }
 
     public DcMotor getLift() {
         return liftMotor;
+    }
+
+    public Servo getBoxServo() {
+        return boxServo;
+    }
+
+    public Servo getIntakeServo() {
+        return intakeServo;
+    }
+
+    public DcMotor getIntake() {
+        return intake;
+    }
+
+    public DcMotor getLeft() {
+        return left;
+    }
+
+    public DcMotor getRight() {
+        return right;
     }
 
     public HardwareMap getHardwareMap() {
