@@ -91,11 +91,11 @@ public class Robot extends OpMode {
 
         intakeServo = hardwareMap.servo.get("intakeServo");
 
-        left = hardwareMap.dcMotor.get("left");
+        left = hardwareMap.dcMotor.get("duckLeft");
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        right = hardwareMap.dcMotor.get("right");
+        right = hardwareMap.dcMotor.get("duckRight");
         right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
