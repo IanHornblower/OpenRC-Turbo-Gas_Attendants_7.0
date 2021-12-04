@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.util.Color;
 import java.math.BigInteger;
 
 @Disabled
-@TeleOp
+@TeleOp(name="Temperature Test", group="Testing")
 @Config
 public class TempTest extends LinearOpMode {
 

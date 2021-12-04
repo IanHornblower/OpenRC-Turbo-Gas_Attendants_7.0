@@ -5,10 +5,7 @@ import android.os.health.ServiceHealthStats;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
@@ -20,10 +17,10 @@ public class Robot extends OpMode {
     private DcMotor leftEncoder, rightEncoder, lateralEncoder;
 
     private DcMotor liftMotor;
-    private Servo boxServo;
+    private CRServo boxServo;
 
     private DcMotor intake;
-    private Servo intakeServo;
+    private CRServo intakeServo;
 
     DcMotor left;
     DcMotor right;
@@ -60,17 +57,17 @@ public class Robot extends OpMode {
         hwMap = hardwareMap;
 
         frontRight = hardwareMap.dcMotor.get("fr");
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         frontLeft = hardwareMap.dcMotor.get("fl");
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         backLeft = hardwareMap.dcMotor.get("bl");
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -84,13 +81,13 @@ public class Robot extends OpMode {
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        boxServo = hardwareMap.servo.get("boxServo");
+        boxServo = hardwareMap.crservo.get("boxServo");
 
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intakeServo = hardwareMap.servo.get("intakeServo");
+        intakeServo = hardwareMap.crservo.get("intakeServo");
 
         left = hardwareMap.dcMotor.get("duckLeft");
         left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -134,11 +131,11 @@ public class Robot extends OpMode {
         return liftMotor;
     }
 
-    public Servo getBoxServo() {
+    public CRServo getBoxServo() {
         return boxServo;
     }
 
-    public Servo getIntakeServo() {
+    public CRServo getIntakeServo() {
         return intakeServo;
     }
 

@@ -6,9 +6,11 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.intake;
 import org.firstinspires.ftc.teamcode.hardware.lift;
 import org.firstinspires.ftc.teamcode.math.Curve;
 import org.firstinspires.ftc.teamcode.math.Point;
@@ -30,6 +32,7 @@ public class RedTeleOp extends LinearOpMode {
 
         robot.setSTART_POSITION(PoseStorage.autoEnd);
 
+
         waitForStart();
 
         while(opModeIsActive()) {
@@ -40,10 +43,10 @@ public class RedTeleOp extends LinearOpMode {
             // Drive Train
 
             double leftX = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_x, 0.1), LEFT_TRIGGER_X_POW);
-            double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
+            double leftY = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.driveFieldCentric(leftX, leftY, turn);
+            robot.DriveTrain.setMotorPowers(leftX, leftY, -turn);
 
             // Duck Motor
 
@@ -52,29 +55,29 @@ public class RedTeleOp extends LinearOpMode {
 
             // Lift System
 
-            if(gamepad2.dpad_down) {
-                robot.lift.setServoState(lift.SERVOSTATE.ONE);
-            }
-
-            if(gamepad2.dpad_right) {
-                robot.lift.setServoState(lift.SERVOSTATE.TWO);
-            }
-
-            if(gamepad2.dpad_up) {
-                robot.lift.setServoState(lift.SERVOSTATE.THREE);
-            }
-
-            if(gamepad2.dpad_left) {
-                robot.lift.setServoState(lift.SERVOSTATE.INTAKE_LEVEL);
-            }
+            //if(gamepad2.dpad_down) {
+            //    robot.lift.setServoState(lift.SERVOSTATE.ONE);
+            //}
+//
+            //if(gamepad2.dpad_right) {
+            //    robot.lift.setServoState(lift.SERVOSTATE.TWO);
+            //}
+//
+            //if(gamepad2.dpad_up) {
+            //    robot.lift.setServoState(lift.SERVOSTATE.THREE);
+            //}
+//
+            //if(gamepad2.dpad_left) {
+            //    robot.lift.setServoState(lift.SERVOSTATE.INTAKE_LEVEL);
+            //}
 
             if(gamepad2.y) {
                 robot.lift.primeLift();
             }
 
-            if(gamepad2.b) {
-                robot.lift.scoreFreight();
-            }
+            //if(gamepad2.b) {
+            //    robot.lift.scoreFreight();
+            //}
 
             if(gamepad2.a) {
                 robot.lift.returnLift();
@@ -82,23 +85,44 @@ public class RedTeleOp extends LinearOpMode {
 
             // Intake System
 
-            if(gamepad2.dpad_down) {
-                robot.intakeSys.regularFreightIntake();
+            if(gamepad1.dpad_up) {
+                robot.getIntakeServo().setPower(-1);
+            }
+            else {
+                robot.getIntakeServo().setPower(0);
+            }
+
+            if(gamepad1.dpad_down) {
+                robot.getIntakeServo().setPower(1);
+            }
+            else {
+                robot.getIntakeServo().setPower(0);
             }
 
             if(gamepad2.dpad_up) {
-                robot.intakeSys.raiseIntake();
+                robot.getBoxServo().setPower(1);
+            }
+            else {
+                robot.getBoxServo().setPower(0);
             }
 
-            if(gamepad2.dpad_left) {
-                robot.intakeSys.raiseIntake();
+            if(gamepad2.dpad_down) {
+                robot.getBoxServo().setPower(-1);
+            }
+            else {
+                robot.getBoxServo().setPower(0);
             }
 
-            if(gamepad2.dpad_right) {
-                robot.intakeSys.duckIntake();
-            }
+            //if(gamepad1.dpad_right) {
+            //    robot.intakeSys.duckIntake();
+            //}
 
             robot.getLift().setPower(gamepad2.left_stick_y);
+
+            if(gamepad2.left_trigger > 0.1) {
+                robot.getLeft().setPower(-1);
+                robot.getLeft().setPower(1);
+            }
 
             robot.intakeSys.reverse(gamepad2.left_trigger > 0.1);
 

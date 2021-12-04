@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
 import org.firstinspires.ftc.teamcode.util.Color;
 
 @Disabled
-@TeleOp
 @Config
+@TeleOp(name="Controller Test", group="Testing")
 public class ControllerTest extends LinearOpMode {
 
     public static boolean DashTelemetryEnabled = true;

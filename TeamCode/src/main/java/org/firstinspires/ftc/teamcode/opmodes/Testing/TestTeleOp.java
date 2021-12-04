@@ -19,7 +19,6 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
-@Disabled
 @Config
 @TeleOp(name = "Testing OpMode", group = "Testing")
 public class TestTeleOp extends LinearOpMode {
@@ -53,7 +52,23 @@ public class TestTeleOp extends LinearOpMode {
             double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.driveFieldCentric(leftX, leftY, turn);
+            robot.DriveTrain.driveFieldCentric(0, leftY, turn);
+
+            if(gamepad1.square) {
+                robot.getFrontLeft().setPower(1);
+            }
+
+            if(gamepad1.triangle) {
+                robot.getFrontRight().setPower(1);
+            }
+
+            if(gamepad1.circle) {
+                robot.getBackRight().setPower(1);
+            }
+
+            if(gamepad1.x) {
+                robot.getBackLeft().setPower(1);
+            }
 
             field.createCircularRobot(robot.pos);
 

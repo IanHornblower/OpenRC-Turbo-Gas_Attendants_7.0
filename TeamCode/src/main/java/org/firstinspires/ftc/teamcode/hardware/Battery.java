@@ -33,12 +33,12 @@ public class Battery {
     }
 
     public static double currentDraw() {
-        if (expansionHub == null) throw new NullPointerException("expansionHub is Not Defined");
+        if (expansionHub == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
         return expansionHub.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS);
     }
 
     public static double voltage() {
-        if (expansionHub == null) throw new NullPointerException("expansionHub is Not Defined");
+        if (expansionHub == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
         return Math.round(expansionHub.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS));
     }
 
