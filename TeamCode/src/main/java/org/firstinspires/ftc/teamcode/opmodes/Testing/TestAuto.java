@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.control.CornettCore;
@@ -18,6 +19,7 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
+@Disabled
 @Autonomous(name = "Testing Auto", group = "Testing")
 public class TestAuto extends LinearOpMode {
 

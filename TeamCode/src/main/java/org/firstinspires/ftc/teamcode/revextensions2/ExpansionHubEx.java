@@ -203,6 +203,7 @@ public class ExpansionHubEx extends LynxCommExceptionHandler implements Hardware
             LynxGetADCResponse response = command.sendReceive();
 
             int ma = response.getValue();
+            if (ma < 5) ma = 5;
 
             if(units == CurrentDrawUnits.MILLIAMPS)
             {
