@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -18,7 +19,7 @@ import java.nio.charset.MalformedInputException;
 public class lift {
 
     DcMotor lift;
-    Servo boxServo;
+    CRServo boxServo;
     MiniPID liftPID;
     Robot robot;
 
@@ -60,6 +61,7 @@ public class lift {
       //  }while(position != lift.getCurrentPosition());
         
     }
+/**
 
     public void setServoPosition() {
         switch (state) {
@@ -77,6 +79,7 @@ public class lift {
                 break;
         }
     }
+ */
 
     public void setServoState(SERVOSTATE state) {
         this.state = state;
@@ -94,6 +97,7 @@ public class lift {
         setServoState(SERVOSTATE.INTAKE_LEVEL);
         setPosition(lowest);
     }
+/**
 
     public void scoreFreight() { // Add More when ready :)
         switch (state) {
@@ -118,4 +122,5 @@ public class lift {
                 setPosition(lowest);
         }
     }
+ */
 }

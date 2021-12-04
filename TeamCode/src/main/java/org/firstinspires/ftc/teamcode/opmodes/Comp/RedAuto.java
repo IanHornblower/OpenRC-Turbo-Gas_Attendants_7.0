@@ -31,13 +31,13 @@ public class RedAuto extends LinearOpMode {
 
         FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
 
-        camera.initWebCamera();
-        camera.initPipeline();
-        camera.startCamera();
+        //camera.initWebCamera();
+        //camera.initPipeline();
+        //camera.startCamera();
+//
+       // camera.startCameraStream(0);
 
-        camera.startCameraStream(0);
-
-        CameraStreamServer.getInstance().setSource(camera.getCamera());
+        //CameraStreamServer.getInstance().setSource(camera.getCamera());
 
         robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(0)));  // Change
 
@@ -54,6 +54,7 @@ public class RedAuto extends LinearOpMode {
 
             CornettCore motionProfile = new CornettCore(robot);
 
+            /**
             switch(AutoConfig.config) {
                 case DUCK:
 
@@ -95,6 +96,11 @@ public class RedAuto extends LinearOpMode {
 
                     break;
             }
+             */
+
+            robot.DriveTrain.setMotorPowers(0, 1, 0);
+            sleep(2100);
+            robot.stopDrive();
 
 
             PoseStorage.autoEnd = robot.pos;

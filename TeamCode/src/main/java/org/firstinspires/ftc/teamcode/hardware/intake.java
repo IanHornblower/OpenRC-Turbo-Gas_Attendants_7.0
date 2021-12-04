@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import androidx.annotation.CallSuper;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -10,7 +11,7 @@ public class intake {
 
     Robot robot;
     DcMotor intake;
-    Servo intakeServo;
+    CRServo intakeServo;
 
     public static double ON = -1;
 
@@ -59,9 +60,12 @@ public class intake {
         }
     }
 
+   /*
     public void raiseIntake() {
         intakeServo.setPosition(UP);
     }
+*/
+/**
 
     public void inAirIntake() {
         robot.getIntakeServo().setPosition(RAISED);
@@ -74,5 +78,6 @@ public class intake {
     public void duckIntake() {
         robot.getIntakeServo().setPosition(DUCK_DOWN);
     }
+ */
 
 }

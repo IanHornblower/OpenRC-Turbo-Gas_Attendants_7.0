@@ -24,7 +24,7 @@ public class spinMotor {
 
     public void run(boolean run) {
         if(run) {
-            robot.getLeft().setPower(speed*leftMult);
+            robot.getLeft().setPower(-speed*leftMult);
             robot.getRight().setPower(speed*rightMult);
         }
         else {
@@ -35,7 +35,7 @@ public class spinMotor {
 
     public void reverse(boolean run) {
         if(run) {
-            robot.getLeft().setPower(-speed*leftMult);
+            robot.getLeft().setPower(speed*leftMult);
             robot.getRight().setPower(-speed*rightMult);
         }
         else {
