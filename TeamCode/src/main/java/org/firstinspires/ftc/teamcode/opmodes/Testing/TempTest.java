@@ -2,22 +2,13 @@
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.controller.Controller;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
-import org.firstinspires.ftc.teamcode.hardware.Blinkin;
 import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
-import org.firstinspires.ftc.teamcode.util.Color;
 
 import java.math.BigInteger;
 
-@Disabled
 @TeleOp(name="Temperature Test", group="Testing")
 @Config
 public class TempTest extends LinearOpMode {
