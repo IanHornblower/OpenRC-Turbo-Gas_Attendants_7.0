@@ -22,8 +22,8 @@ public class Robot extends OpMode {
     private DcMotor intake;
     private CRServo intakeServo;
 
-    DcMotor left;
-    DcMotor right;
+    private DcMotor duckLeft;
+    private DcMotor duckRight;
 
     private BNO055IMU imu;
     private Orientation angles;
@@ -89,13 +89,13 @@ public class Robot extends OpMode {
 
         intakeServo = hardwareMap.crservo.get("intakeServo");
 
-        left = hardwareMap.dcMotor.get("duckLeft");
-        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        left.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        duckLeft = hardwareMap.dcMotor.get("duckLeft");
+        duckLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        duckLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        right = hardwareMap.dcMotor.get("duckRight");
-        right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        right.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        duckRight = hardwareMap.dcMotor.get("duckRight");
+        duckRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        duckRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         lateralEncoder = frontLeft;
         //lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -143,12 +143,12 @@ public class Robot extends OpMode {
         return intake;
     }
 
-    public DcMotor getLeft() {
-        return left;
+    public DcMotor getDuckLeft() {
+        return duckLeft;
     }
 
-    public DcMotor getRight() {
-        return right;
+    public DcMotor getDuckRight() {
+        return duckRight;
     }
 
     public HardwareMap getHardwareMap() {
