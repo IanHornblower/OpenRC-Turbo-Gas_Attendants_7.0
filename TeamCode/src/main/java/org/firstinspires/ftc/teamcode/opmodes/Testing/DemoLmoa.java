@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.PoseStorage;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.Controller;
 import static org.firstinspires.ftc.teamcode.util.Controller.LEFT_TRIGGER_X_POW;
 import static org.firstinspires.ftc.teamcode.util.Controller.LEFT_TRIGGER_Y_POW;
 
+@Disabled
 @Config
 @TeleOp(name = "RedSide TeleOp", group = "Comp")
 public class DemoLmoa extends LinearOpMode {
@@ -80,36 +82,6 @@ public class DemoLmoa extends LinearOpMode {
 
             if(gamepad2.a) {
                 robot.lift.returnLift();
-            }
-
-            // Intake System
-
-            if(gamepad1.dpad_up) {
-                robot.getIntakeServo().setPower(-1);
-            }
-            else {
-                robot.getIntakeServo().setPower(0);
-            }
-
-            if(gamepad1.dpad_down) {
-                robot.getIntakeServo().setPower(1);
-            }
-            else {
-                robot.getIntakeServo().setPower(0);
-            }
-
-            if(gamepad2.dpad_up) {
-                robot.getBoxServo().setPower(1);
-            }
-            else {
-                robot.getBoxServo().setPower(0);
-            }
-
-            if(gamepad2.dpad_down) {
-                robot.getBoxServo().setPower(-1);
-            }
-            else {
-                robot.getBoxServo().setPower(0);
             }
 
             //if(gamepad1.dpad_right) {
