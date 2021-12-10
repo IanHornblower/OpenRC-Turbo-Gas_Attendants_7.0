@@ -1,32 +1,22 @@
-package org.firstinspires.ftc.teamcode.opmodes.Comp;
+package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.PoseStorage;
-import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
-import org.firstinspires.ftc.teamcode.hardware.intake;
-import org.firstinspires.ftc.teamcode.hardware.lift;
-import org.firstinspires.ftc.teamcode.math.Curve;
-import org.firstinspires.ftc.teamcode.math.Point;
-import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.Controller;
-import static org.firstinspires.ftc.teamcode.util.Controller.*;
-import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 
-import org.firstinspires.ftc.teamcode.util.MathUtil;
+import static org.firstinspires.ftc.teamcode.util.Controller.LEFT_TRIGGER_X_POW;
+import static org.firstinspires.ftc.teamcode.util.Controller.LEFT_TRIGGER_Y_POW;
 
 @Config
 @TeleOp(name = "RedSide TeleOp", group = "Comp")
-public class RedTeleOp extends LinearOpMode {
+public class DemoLmoa extends LinearOpMode {
 
     ExpansionHubEx expansionHub;
 
@@ -47,11 +37,15 @@ public class RedTeleOp extends LinearOpMode {
 
             // Drive Train
 
-            double leftX = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_x, 0.1), LEFT_TRIGGER_X_POW);
-            double leftY = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
-            double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
+            double Ch3 = Controller.deadZone(-gamepad1.left_stick_x, 0.1);
+            double Ch4 = Controller.deadZone(-gamepad1.left_stick_y, 0.1);
+            double Ch1 = Controller.deadZone(-gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.setMotorPowers(leftX, leftY, -turn);
+
+            robot.getFrontLeft().setPower(Ch3+Ch1-Ch4);
+            robot.getBackLeft().setPower(-Ch3+Ch1-Ch4);
+            robot.getFrontRight().setPower(Ch3+Ch1+Ch4);
+            robot.getBackRight().setPower(-Ch3+Ch1+Ch4);
 
             // Duck Motor
 

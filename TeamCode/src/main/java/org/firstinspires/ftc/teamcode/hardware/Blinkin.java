@@ -4,8 +4,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern;
 
-import static com.sun.tools.javac.util.StringUtils.toLowerCase;
-
 public class Blinkin {
 
     public static RevBlinkinLedDriver Driver = null;
@@ -14,7 +12,7 @@ public class Blinkin {
 
         if (Driver == null) throw new NullPointerException("Blinkin.Driver is Not Defined");
 
-        switch (toLowerCase(cname)) {
+        switch (cname) {
             case "dark gray":  Driver.setPattern(BlinkinPattern.DARK_GRAY); break;
             case "gray":       Driver.setPattern(BlinkinPattern.GRAY); break;
             case "white":      Driver.setPattern(BlinkinPattern.WHITE); break;
