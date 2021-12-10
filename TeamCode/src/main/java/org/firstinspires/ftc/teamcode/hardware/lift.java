@@ -19,7 +19,7 @@ import java.nio.charset.MalformedInputException;
 public class lift {
 
     DcMotor lift;
-    CRServo boxServo;
+    Servo boxServo;
     MiniPID liftPID;
     Robot robot;
 
