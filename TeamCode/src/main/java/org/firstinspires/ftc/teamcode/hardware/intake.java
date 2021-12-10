@@ -15,8 +15,8 @@ public class intake {
 
     public static double ON = -1;
 
-    public static double UP = 0.5;
-    public static double RAISED = 0.7;
+    public static double UP = 0.0;
+    public static double RAISED = 0.2;
     public static double REGULAR_DOWN = 0.4;
 
 
