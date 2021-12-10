@@ -43,89 +43,27 @@ public class RedTeleOp extends LinearOpMode {
             // Drive Train
 
             double leftX = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_x, 0.1), LEFT_TRIGGER_X_POW);
-            double leftY = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
+            double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.setMotorPowers(leftX, leftY, -turn);
+            robot.DriveTrain.driveFieldCentric(leftX, leftY, turn);
 
             // Duck Motor
 
             robot.spinMotor.run(gamepad2.right_bumper);
             robot.spinMotor.reverse(gamepad2.left_bumper);
 
-            // Lift System
+            // Intake
 
-            //if(gamepad2.dpad_down) {
-            //    robot.lift.setServoState(lift.SERVOSTATE.ONE);
-            //}
-//
-            //if(gamepad2.dpad_right) {
-            //    robot.lift.setServoState(lift.SERVOSTATE.TWO);
-            //}
-//
-            //if(gamepad2.dpad_up) {
-            //    robot.lift.setServoState(lift.SERVOSTATE.THREE);
-            //}
-//
-            //if(gamepad2.dpad_left) {
-            //    robot.lift.setServoState(lift.SERVOSTATE.INTAKE_LEVEL);
-            //}
+            if(gamepad1.dpad_down) robot.intakeSys.regularFreightIntake();
 
-            if(gamepad2.y) {
-                robot.lift.primeLift();
-            }
+            if(gamepad1.dpad_up) robot.intakeSys.raiseIntake();
 
-            //if(gamepad2.b) {
-            //    robot.lift.scoreFreight();
-            //}
+            if(gamepad1.dpad_left || gamepad1.dpad_right) robot.intakeSys.inAirIntake();
 
-            if(gamepad2.a) {
-                robot.lift.returnLift();
-            }
+            robot.getIntake().setPower(gamepad2.left_trigger * 1e15);
 
-            // Intake System
-
-            if(gamepad1.dpad_up) {
-                robot.getIntakeServo().setPower(-1);
-            }
-            else {
-                robot.getIntakeServo().setPower(0);
-            }
-
-            if(gamepad1.dpad_down) {
-                robot.getIntakeServo().setPower(1);
-            }
-            else {
-                robot.getIntakeServo().setPower(0);
-            }
-
-            if(gamepad2.dpad_up) {
-                robot.getBoxServo().setPower(1);
-            }
-            else {
-                robot.getBoxServo().setPower(0);
-            }
-
-            if(gamepad2.dpad_down) {
-                robot.getBoxServo().setPower(-1);
-            }
-            else {
-                robot.getBoxServo().setPower(0);
-            }
-
-            //if(gamepad1.dpad_right) {
-            //    robot.intakeSys.duckIntake();
-            //}
-
-            robot.getLift().setPower(gamepad2.left_stick_y);
-
-            robot.intakeSys.reverse(gamepad2.left_trigger > 0.1);
-
-            robot.intakeSys.run(gamepad2.right_trigger > 0.1);
-
-            telemetry.addData("Lift", robot.lift.state.toString());
-
-            telemetry.addData("Lift Motor Enc", robot.getLift().getCurrentPosition());
+            robot.getIntake().setPower(-gamepad2.right_trigger);
 
             telemetry.addData("\nXYH", robot.pos.toString());
             telemetry.update();
