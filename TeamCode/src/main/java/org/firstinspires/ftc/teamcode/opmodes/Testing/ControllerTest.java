@@ -1,14 +1,18 @@
 package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
+import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import org.firstinspires.ftc.teamcode.hardware.Controller;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
+import org.firstinspires.ftc.teamcode.hardware.Controller;
 import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
 import org.firstinspires.ftc.teamcode.util.Color;
+
+import static com.qualcomm.robotcore.hardware.Gamepad.ID_UNASSOCIATED;
 
 @Config
 @TeleOp(name="Controller Test", group="Testing")
@@ -19,7 +23,7 @@ public class ControllerTest extends LinearOpMode {
     public long time = 0;
     public long cycleLength = 0;
     public long timeRunning = 0;
-    public static int BuildNumber = 18;
+    public static int BuildNumber = 24;
     public static String HubName = "Expansion Hub 1";
     public static boolean ImperialUnits = false;
     public static String timeUnit = "HOURS";
@@ -29,15 +33,21 @@ public class ControllerTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        telemetry.clear();
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
+        telemetry.clear();
         expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
         Battery.expansionHub = expansionHub;
-
-
+        Log.i("GP-A", Float.toString(gamepad1.left_stick_x));
+        Gamepad gp1 = gamepad1;
+        Gamepad gp2 = gamepad2;
+        Controller gamepad1 = new Controller(gp1);
         telemetry.addLine("Controller Test");
         telemetry.addData("Version", BuildNumber);
+        if (gamepad1.type() != Gamepad.Type.SONY_PS4 && gamepad1.id != ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't a PS4 Controller!");
+        if (gamepad2.type() != Gamepad.Type.SONY_PS4 && gamepad2.id != ID_UNASSOCIATED) telemetry.addLine("Controller 2 isn't a PS4 Controller!");
+        if (gamepad1.id == ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't Connected!");
+        if (gamepad2.id == ID_UNASSOCIATED) telemetry.addLine("Controller 2 isn't Connected!");
         telemetry.addLine("Ready");
         telemetry.update();
 
@@ -56,15 +66,20 @@ public class ControllerTest extends LinearOpMode {
             time = System.currentTimeMillis();
             timeRunning = timeRunning + cycleLength;
 
-            gamepad1.update();
-
             telemetry.clear();
 
 
-            // Swipe Testing Here
+            // Gamepad Testing Here
+            gamepad1.update();
 
+            if(gamepad1.touchingTopLeft) telemetry.addData("Touch Region", "Top Left");
+            if(gamepad1.touchingTopRight) telemetry.addData("Touch Region", "Top Right");
+            if(gamepad1.touchingBottomLeft) telemetry.addData("Touch Region", "Bottom Left");
+            if(gamepad1.touchingBottomRight) telemetry.addData("Touch Region", "Bottom Right");
 
-
+            telemetry.addData("Gamepad Loc 1", gamepad1.loc1[0]+", "+gamepad1.loc1[1]);
+            telemetry.addData("Gamepad Loc 2", gamepad1.loc2[0]+", "+gamepad1.loc2[1]);
+            telemetry.addData("Gamepad Loc 3", gamepad1.loc3[0]+", "+gamepad1.loc3[1]);
 
 
 
@@ -99,8 +114,8 @@ public class ControllerTest extends LinearOpMode {
             telemetry.addData("2 Finger X", gamepad1.touchpad_finger_2_x);
             telemetry.addData("2 Finger Y", gamepad1.touchpad_finger_2_y);
             telemetry.addData("Gamepad ID", gamepad1.getUser());
-            telemetry.addData("Loop Time", cycleLength);
-            telemetry.addData("Time Running", (int)Math.floor((double)(timeRunning/1000))+"ms");
+            telemetry.addData("Loop Time", cycleLength+"ms");
+            telemetry.addData("Time Running", (int)Math.floor((double)(timeRunning/1000))+" Seconds");
             telemetry.addData("Battery Voltage", Battery.voltage());
             telemetry.addData("Battery Current", Math.round(Battery.currentDraw())+"mA");
             telemetry.addData("Battery Apx. %", Battery.percentage()+"%");
