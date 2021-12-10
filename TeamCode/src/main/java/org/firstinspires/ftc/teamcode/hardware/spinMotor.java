@@ -8,8 +8,7 @@ public class spinMotor {
 
     Robot robot;
 
-    DcMotor left;
-    DcMotor right;
+    DcMotor duck;
 
     public static double speed = 0.74;
 
@@ -18,29 +17,24 @@ public class spinMotor {
 
     public spinMotor(Robot robot) {
         this.robot = robot;
-        this.right = robot.getDuckRight();
-        this.left = robot.getDuckLeft();
+        this.duck = robot.getDuck();
     }
 
     public void run(boolean run) {
         if(run) {
-            robot.getDuckLeft().setPower(-speed*leftMult);
-            robot.getDuckRight().setPower(speed*rightMult);
+            robot.getDuck().setPower(speed*leftMult);
         }
         else {
-            robot.getDuckLeft().setPower(0);
-            robot.getDuckRight().setPower(0);
+            robot.getDuck().setPower(0);
         }
     }
 
     public void reverse(boolean run) {
         if(run) {
-            robot.getDuckLeft().setPower(speed*leftMult);
-            robot.getDuckRight().setPower(-speed*rightMult);
+            robot.getDuck().setPower(-speed*leftMult);
         }
         else {
-            robot.getDuckLeft().setPower(0);
-            robot.getDuckRight().setPower(0);
+            robot.getDuck().setPower(0);
         }
     }
 
