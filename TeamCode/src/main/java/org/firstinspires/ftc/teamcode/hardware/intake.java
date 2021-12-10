@@ -11,14 +11,13 @@ public class intake {
 
     Robot robot;
     DcMotor intake;
-    CRServo intakeServo;
+    Servo intakeServo;
 
     public static double ON = -1;
 
-    public static double UP = 1;
+    public static double UP = 0.5;
     public static double RAISED = 0.7;
     public static double REGULAR_DOWN = 0.4;
-    public static double DUCK_DOWN = 0.3;
 
 
     public intake(Robot robot) {
@@ -60,12 +59,10 @@ public class intake {
         }
     }
 
-   /*
     public void raiseIntake() {
         intakeServo.setPosition(UP);
     }
-*/
-/**
+
 
     public void inAirIntake() {
         robot.getIntakeServo().setPosition(RAISED);
@@ -74,10 +71,4 @@ public class intake {
     public void regularFreightIntake() {
         robot.getIntakeServo().setPosition(REGULAR_DOWN);
     }
-
-    public void duckIntake() {
-        robot.getIntakeServo().setPosition(DUCK_DOWN);
-    }
- */
-
 }
