@@ -17,10 +17,10 @@ public class Robot extends OpMode {
     private DcMotor leftEncoder, rightEncoder, lateralEncoder;
 
     private DcMotor liftMotor;
-    private CRServo boxServo;
+    private Servo boxServo;
 
     private DcMotor intake;
-    private CRServo intakeServo;
+    private Servo intakeServo;
 
     private DcMotor duckLeft;
     private DcMotor duckRight;
@@ -61,18 +61,18 @@ public class Robot extends OpMode {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft = hardwareMap.dcMotor.get("fl");
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft = hardwareMap.dcMotor.get("bl"); // fl
+        //frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backLeft = hardwareMap.dcMotor.get("bl");
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft = hardwareMap.dcMotor.get("fl"); // bl
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         backRight = hardwareMap.dcMotor.get("br");
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -81,13 +81,13 @@ public class Robot extends OpMode {
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        boxServo = hardwareMap.crservo.get("boxServo");
+        boxServo = hardwareMap.servo.get("boxServo");
 
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         //intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intakeServo = hardwareMap.crservo.get("intakeServo");
+        intakeServo = hardwareMap.servo.get("intakeServo");
 
         duckLeft = hardwareMap.dcMotor.get("duckLeft");
         duckLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -131,11 +131,11 @@ public class Robot extends OpMode {
         return liftMotor;
     }
 
-    public CRServo getBoxServo() {
+    public Servo getBoxServo() {
         return boxServo;
     }
 
-    public CRServo getIntakeServo() {
+    public Servo getIntakeServo() {
         return intakeServo;
     }
 
