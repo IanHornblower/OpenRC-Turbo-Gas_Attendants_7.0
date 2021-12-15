@@ -26,6 +26,9 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 @TeleOp(name = "RedSide TeleOp", group = "Comp")
 public class RedTeleOp extends LinearOpMode {
 
+    public static double turnK = 1;
+    public static double moveK = 1;
+
     @Override
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap);
@@ -46,12 +49,23 @@ public class RedTeleOp extends LinearOpMode {
             double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.driveFieldCentric(leftX, leftY, turn);
+            //moveK = 1 - gamepad1.left_trigger;
+            //turnK = 1 - gamepad1.right_trigger;
+
+
+            robot.DriveTrain.setMotorPowers(leftX*moveK, leftY*moveK, turn*turnK);
 
             // Duck Motor
 
-            robot.spinMotor.run(gamepad2.right_bumper);
-            robot.spinMotor.reverse(gamepad2.left_bumper);
+            if (gamepad2.left_bumper) {
+                robot.getDuck().setPower(1);
+            }
+            else if(gamepad2.right_bumper) {
+                robot.getDuck().setPower(-1);
+            }
+            else {
+                robot.getDuck().setPower(0);
+            }
 
             // Intake
 
@@ -61,9 +75,15 @@ public class RedTeleOp extends LinearOpMode {
 
             if(gamepad1.dpad_left || gamepad1.dpad_right) robot.intakeSys.inAirIntake();
 
-            robot.getIntake().setPower(gamepad2.left_trigger * 1e15);
-
-            robot.getIntake().setPower(-gamepad2.right_trigger);
+            if (gamepad2.left_trigger > 0.1) {
+                robot.getIntake().setPower(-1);
+            }
+            else if(gamepad2.right_trigger > 0.1) {
+                robot.getIntake().setPower(1);
+            }
+            else {
+                robot.getIntake().setPower(0);
+            }
 
             telemetry.addData("\nXYH", robot.pos.toString());
             telemetry.update();
