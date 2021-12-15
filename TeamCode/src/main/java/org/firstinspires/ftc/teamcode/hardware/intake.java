@@ -4,6 +4,7 @@ import androidx.annotation.CallSuper;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -44,6 +45,9 @@ public class intake {
 
     public void run(boolean run) {
         if(run) {
+            if(robot.getIntake().getDirection() == DcMotorSimple.Direction.REVERSE) {
+                robot.getIntake().setDirection(DcMotorSimple.Direction.FORWARD);
+            }
             startIntake();
         }
         else {
@@ -52,7 +56,10 @@ public class intake {
     }
     public void reverse(boolean run) {
         if(run) {
-            reverseIntake();
+            if(robot.getIntake().getDirection() == DcMotorSimple.Direction.FORWARD) {
+                robot.getIntake().setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+            startIntake();
         }
         else {
             stopIntake();

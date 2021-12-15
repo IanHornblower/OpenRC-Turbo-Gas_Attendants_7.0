@@ -58,29 +58,21 @@ public class TestTeleOp extends LinearOpMode {
                 robot.getFrontLeft().setPower(1);
             }
 
-            if(gamepad1.triangle) {
+            else if(gamepad1.triangle) {
                 robot.getFrontRight().setPower(1);
             }
 
-            if(gamepad1.circle) {
+            else if(gamepad1.circle) {
                 robot.getBackRight().setPower(1);
             }
 
-            if(gamepad1.x) {
+            else if(gamepad1.cross) {
                 robot.getBackLeft().setPower(1);
             }
 
-            field.createCircularRobot(robot.pos);
-
-            dashboard.sendTelemetryPacket(field.getPacket());
-
-            //telemetry.addData("Lift Pos", robot.getLift().getCurrentPosition());
-
-            //robot.lift.setPosition(gamepad1.left_trigger);
-            robot.getLift().setPower(gamepad2.right_stick_y);
-
-            //telemetry.addData("LeftX:", gamepad1.left_stick_x + "  LeftY: " + gamepad1.left_stick_y);
-            //telemetry.addData("RightX", gamepad1.right_stick_x);
+            else {
+                robot.stopDrive();
+            }
 
             //telemetry.addData("\nXYH", robot.pos.toString());
             //telemetry.update();
