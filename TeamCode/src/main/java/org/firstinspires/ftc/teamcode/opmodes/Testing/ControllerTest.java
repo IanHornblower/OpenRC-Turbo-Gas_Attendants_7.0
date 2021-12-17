@@ -1,10 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmodes.Testing;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+<<<<<<< HEAD
+=======
+import com.qualcomm.robotcore.hardware.Gamepad;
+import org.firstinspires.ftc.teamcode.hardware.Battery;
+import org.firstinspires.ftc.teamcode.hardware.Blinkin;
+>>>>>>> 214e7f6 (balls)
 import org.firstinspires.ftc.teamcode.hardware.Controller;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
 import org.firstinspires.ftc.teamcode.revextensions2.ExpansionHubEx;
@@ -16,23 +23,38 @@ public class ControllerTest extends LinearOpMode {
 
 
     public static boolean DashTelemetryEnabled = true;
+<<<<<<< HEAD
     public long time = 0;
     public long cycleLength = 0;
     public long timeRunning = 0;
     public static int BuildNumber = 18;
+=======
+    public double time = 0;
+    public double cycleLength = 0;
+    public static double timeRunning = 0;
+    public static int BuildNumber = 235632752;
+>>>>>>> 214e7f6 (balls)
     public static String HubName = "Expansion Hub 1";
     public static boolean ImperialUnits = false;
     public static String timeUnit = "HOURS";
+    public static boolean pain = false;
     ExpansionHubEx expansionHub;
+    RevBlinkinLedDriver Driver;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+<<<<<<< HEAD
         telemetry.clear();
+=======
+        if(pain) throw new OutOfMemoryError("feed me daddy");
+>>>>>>> 214e7f6 (balls)
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
         expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
+        Driver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+        Blinkin.Driver = Driver;
         Battery.expansionHub = expansionHub;
 
 
@@ -74,10 +96,10 @@ public class ControllerTest extends LinearOpMode {
 
 
             // Control Hub LED Testing
-            if (gamepad1.circle) expansionHub.setLedColor(255,0,0);
-            else if (gamepad1.square) expansionHub.setLedColor(255,0,255);
-            else if (gamepad1.cross) expansionHub.setLedColor(0,0,255);
-            else if (gamepad1.triangle) expansionHub.setLedColor(0,255,0);
+            if (gamepad1.circle) { expansionHub.setLedColor(255,0,0); Blinkin.setColor("red"); }
+            else if (gamepad1.square) { expansionHub.setLedColor(255,0,255); Blinkin.setColor("hot pink"); }
+            else if (gamepad1.cross) { expansionHub.setLedColor(0,0,255); Blinkin.setColor("blue"); }
+            else if (gamepad1.triangle) { expansionHub.setLedColor(0,255,0);  Blinkin.setColor("green"); }
             else if (gamepad1.touchpad_finger_1) {
                 double p1 = gamepad1.touchpad_finger_1_x;
                 int p2 = (int)Math.round(((((100*p1)/2)+50)/100)*360);
@@ -105,10 +127,10 @@ public class ControllerTest extends LinearOpMode {
             telemetry.addData("Battery Current", Math.round(Battery.currentDraw())+"mA");
             telemetry.addData("Battery Apx. %", Battery.percentage()+"%");
             telemetry.addData("Battery Time", Battery.timeRemaining(timeUnit));
-            if(ImperialUnits)
-                temp = expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.FAHRENHEIT) + "°F";
-            else temp = expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.CELSIUS) + "°C";
+            temp = ImperialUnits ? expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.FAHRENHEIT) + "°F" : expansionHub.getInternalTemperature(ExpansionHubEx.TemperatureUnits.CELSIUS) + "°C";
             telemetry.addData("Temperature", temp);
+
+            Blinkin.updateLightTimer((int)timeRunning);
 
             telemetry.update();
 
