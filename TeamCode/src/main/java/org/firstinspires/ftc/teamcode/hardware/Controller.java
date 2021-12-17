@@ -27,6 +27,7 @@ public class Controller {
     public void update() {
         updateInputs();
         cycleLength = System.currentTimeMillis() - time;
+        time = System.currentTimeMillis();
         ttime = ttime + cycleLength;
 
         // Set Touch Positions to 0 when you let go
@@ -56,7 +57,7 @@ public class Controller {
         Log.i("Controller.update()", Float.toString(left_stick_y));
 
 
-        if(gamepad.touchpad_finger_1 && ttime > 500) {
+        if(gamepad.touchpad_finger_1 && ttime > 250) {
             loc3 = new Float[]{loc2[0], loc2[1]};
             loc2 = new Float[]{loc1[0], loc1[1]};
             loc1 = new Float[]{gamepad.touchpad_finger_1_x, gamepad.touchpad_finger_1_y};
