@@ -27,35 +27,134 @@ public class RedAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Robot robot = new Robot(hardwareMap);
+        telemetry.addLine("Starting Hardware Map & Camera");
+        telemetry.update();
 
+        Robot robot = new Robot(hardwareMap);
         FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
 
-        //camera.initWebCamera();
-        //camera.initPipeline();
-        //camera.startCamera();
-//
-       // camera.startCameraStream(0);
+        camera.initWebCamera();
+        camera.initPipeline();
+        camera.startCamera();
+
+       camera.startCameraStream(0);
 
         //CameraStreamServer.getInstance().setSource(camera.getCamera());
 
         robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(0)));  // Change
 
-
-
         // Create Trajectories
 
-
+        telemetry.clear();
+        telemetry.addLine("Waiting For Start");
+        telemetry.addLine(
+                "Autonomous Configuration: \n" +
+                         "Side: RED");
+        telemetry.addData("Location", camera.sDeterminePosition());
+        telemetry.update();
 
         waitForStart();
 
+        telemetry.clear();
+        telemetry.update();
+
         while(opModeIsActive()) {
-            robot.updateOdometry();
+           ////robot.updateOdometry();
 
-            CornettCore motionProfile = new CornettCore(robot);
+           ////CornettCore motionProfile = new CornettCore(robot);
 
-            /**
-            switch(AutoConfig.config) {
+            switch(AutoConfig.side) {
+                case RED:
+                    switch(AutoConfig.type) {
+                        case DUCK:
+
+                            switch(camera.determinePosition()) {
+                                case A:
+                                    camera.shutdownPipeline();
+
+
+
+                                    break;
+
+                                case B:
+
+                                case C:
+
+                                default:
+                            }
+
+
+                            break;
+
+                        case WAREHOUSE:
+
+                            switch(camera.determinePosition()) {
+                                case A:
+
+                                    break;
+
+                                case B:
+
+                                case C:
+
+                                default:
+                            }
+
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                    break;
+                case BLUE:
+                    // Do
+                    switch(AutoConfig.type) {
+                        case DUCK:
+
+                            switch(camera.determinePosition()) {
+                                case A:
+
+
+
+
+                                    break;
+
+                                case B:
+                                    camera.shutdownPipeline();
+
+                                case C:
+
+                                default:
+                            }
+
+
+                            break;
+
+                        case WAREHOUSE:
+
+                            switch(camera.determinePosition()) {
+                                case A:
+
+                                    break;
+
+                                case B:
+
+                                case C:
+
+                                default:
+                            }
+
+                            break;
+
+                        default:
+
+                            break;
+                    }
+                    break;
+            }
+
+            switch(AutoConfig.type) {
                 case DUCK:
 
                     switch(camera.determinePosition()) {
@@ -96,16 +195,10 @@ public class RedAuto extends LinearOpMode {
 
                     break;
             }
-             */
-
-            robot.DriveTrain.setMotorPowers(0, 1, 0);
-            sleep(2100);
-            robot.stopDrive();
-
 
             PoseStorage.autoEnd = robot.pos;
 
-            stop();
+            //stop();
         }
     }
 }
