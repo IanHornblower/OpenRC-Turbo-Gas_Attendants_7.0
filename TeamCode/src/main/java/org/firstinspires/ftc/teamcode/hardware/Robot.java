@@ -35,6 +35,8 @@ public class Robot extends OpMode {
     public org.firstinspires.ftc.teamcode.hardware.lift lift;
     public intake intakeSys;
     public spinMotor spinMotor;
+    public Controller driveController;
+    public Controller operatorController;
 
     public enum controlType{ROBOT, FIELD}
 
@@ -120,6 +122,8 @@ public class Robot extends OpMode {
         lift = new lift(this);
         intakeSys = new intake(this);
         spinMotor = new spinMotor(this);
+        driveController = new Controller(gamepad1);
+        operatorController = new Controller(gamepad2);
     }
 
     public DcMotor getLift() {
@@ -209,6 +213,15 @@ public class Robot extends OpMode {
     }
 
     public Pose2D pos = START_POSITION;
+
+    public void update() {
+        updateOdometry();
+        updateVelocity();
+        updateAcumulatedHeading();
+
+        driveController.update();
+        operatorController.update();
+    }
 
     public void updateAcumulatedHeading() {
         double currentHeading = Math.toDegrees(pos.getHeading());
