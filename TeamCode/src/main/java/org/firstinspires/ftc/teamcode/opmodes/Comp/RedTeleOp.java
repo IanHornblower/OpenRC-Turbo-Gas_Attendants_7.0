@@ -57,15 +57,15 @@ public class RedTeleOp extends LinearOpMode {
 
             // Duck Motor
 
-            if (gamepad2.left_bumper) {
-                robot.getDuck().setPower(1);
-            }
-            else if(gamepad2.right_bumper) {
-                robot.getDuck().setPower(-1);
-            }
-            else {
-                robot.getDuck().setPower(0);
-            }
+                    if (gamepad2.left_bumper) {
+                        robot.getDuck().setPower(1);
+                    }
+                    else if(gamepad2.right_bumper) {
+                        robot.getDuck().setPower(-1);
+                    }
+                    else {
+                        robot.getDuck().setPower(0);
+                    }
 
             // Intake
 
@@ -75,15 +75,7 @@ public class RedTeleOp extends LinearOpMode {
 
             if(gamepad1.dpad_left || gamepad1.dpad_right) robot.intakeSys.inAirIntake();
 
-            if (gamepad2.left_trigger > 0.1) {
-                robot.getIntake().setPower(-1);
-            }
-            else if(gamepad2.right_trigger > 0.1) {
-                robot.getIntake().setPower(1);
-            }
-            else {
-                robot.getIntake().setPower(0);
-            }
+            robot.intakeSys.run(gamepad2.right_trigger > 0.1, gamepad2.right_trigger > 0.1);
 
             telemetry.addData("\nXYH", robot.pos.toString());
             telemetry.update();

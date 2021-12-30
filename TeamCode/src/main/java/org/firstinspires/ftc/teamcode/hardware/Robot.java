@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 
 public class Robot extends OpMode {
-    private DcMotor backLeft, backRight, frontLeft, frontRight;
+    private DcMotorEx backLeft, backRight, frontLeft, frontRight;
 
     private DcMotorEx leftEncoder, rightEncoder, lateralEncoder;
 
@@ -52,40 +52,51 @@ public class Robot extends OpMode {
     public Robot(HardwareMap hardwareMap) {
         hwMap = hardwareMap;
 
-        frontRight = hardwareMap.dcMotor.get("front_right_motor");
+        frontRight = hardwareMap.get(DcMotorEx.class, "fr");
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft = hardwareMap.dcMotor.get("front_left_motor");
+        frontLeft = hardwareMap.get(DcMotorEx.class, "fl");
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backLeft = hardwareMap.dcMotor.get("back_left_motor");
+        backLeft = hardwareMap.get(DcMotorEx.class, "bl");
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backRight = hardwareMap.dcMotor.get("back_right_motor");
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight = hardwareMap.get(DcMotorEx.class, "br");
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        lateralEncoder = hardwareMap.get(DcMotorEx.class, "enc_x");
-        lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-        lateralEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lateralEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftMotor = hardwareMap.dcMotor.get("lift");
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        rightEncoder = hardwareMap.get(DcMotorEx.class, "enc_right");
+        boxServo = hardwareMap.servo.get("boxServo");
+
+        intake = hardwareMap.dcMotor.get("intake");
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        intakeServo = hardwareMap.servo.get("intakeServo");
+
+        duck = hardwareMap.dcMotor.get("duck");
+        duck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        duck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        lateralEncoder = frontLeft;
+        //lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        rightEncoder = backRight;
         //rightEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftEncoder = hardwareMap.get(DcMotorEx.class, "enc_left");
-        leftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftEncoder = backLeft;
+        //leftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
 
         stopDrive();
         resetDriveEncoders();
@@ -102,6 +113,11 @@ public class Robot extends OpMode {
 
         DriveTrain = new DriveTrain(this);
         IMU = new IMU(imu);
+        lift = new lift(this);
+        intakeSys = new intake(this);
+        spinMotor = new spinMotor(this);
+        driveController = new Controller(gamepad1);
+        operatorController = new Controller(gamepad2);
 
     }
 
@@ -141,6 +157,25 @@ public class Robot extends OpMode {
         return lateralEncoder;
     }
 
+    public DcMotor getLift() {
+        return liftMotor;
+    }
+
+    public Servo getBoxServo() {
+        return boxServo;
+    }
+
+    public Servo getIntakeServo() {
+        return intakeServo;
+    }
+
+    public DcMotor getIntake() {
+        return intake;
+    }
+
+    public DcMotor getDuck() {
+        return duck;
+    }
 
     private void resetDriveEncoders() {
         rightEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -204,8 +239,8 @@ public class Robot extends OpMode {
         previousHeading = currentHeading;
     }
 
-    public void updateOdometry() { // make update() --> odometry() if need be [Merge with UpdateVelocities()
-        currentRightPosition = rightEncoder.getCurrentPosition(); // Invert in Necessary
+    public void updateOdometry() {
+        currentRightPosition = -rightEncoder.getCurrentPosition(); // Invert in Necessary
         currentLeftPosition = leftEncoder.getCurrentPosition(); // Invert in Necessary
         currentLateralPosition = lateralEncoder.getCurrentPosition(); // Invert in Necessary
 
@@ -234,6 +269,14 @@ public class Robot extends OpMode {
         oldRightPosition = currentRightPosition;
         oldLeftPosition = currentLeftPosition;
         oldLateralPosition = currentLateralPosition;
+    }
+
+    public void update() {
+        updateOdometry();
+        updateAccumulatedHeading();
+
+        driveController.update();
+        operatorController.update();
     }
 
     public void updateEncoderVelocity() {
