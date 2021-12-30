@@ -43,26 +43,15 @@ public class intake {
         setIntakePower(0);
     }
 
-    public void run(boolean run) {
-        if(run) {
-            if(robot.getIntake().getDirection() == DcMotorSimple.Direction.REVERSE) {
-                robot.getIntake().setDirection(DcMotorSimple.Direction.FORWARD);
-            }
-            startIntake();
+    public void run(boolean left, boolean right) {
+        if(left) {
+            intake.setPower(-ON);
+        }
+        else if (right) {
+            intake.setPower(ON);
         }
         else {
-            stopIntake();
-        }
-    }
-    public void reverse(boolean run) {
-        if(run) {
-            if(robot.getIntake().getDirection() == DcMotorSimple.Direction.FORWARD) {
-                robot.getIntake().setDirection(DcMotorSimple.Direction.REVERSE);
-            }
-            startIntake();
-        }
-        else {
-            stopIntake();
+            intake.setPower(0);
         }
     }
 
