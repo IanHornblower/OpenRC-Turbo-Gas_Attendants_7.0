@@ -5,13 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.math.Curve;
 import org.firstinspires.ftc.teamcode.math.Point;
-import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
 @Config
 public class CornettCore extends OpMode {
@@ -19,6 +14,8 @@ public class CornettCore extends OpMode {
     //TODO: Make sure it keeps itself centered when it has no rotation
 
     private Robot robot;
+
+    public enum DIRECTION {FORWARD, BACKWARD};
 
     MiniPID defaultTurnPID = new MiniPID(0.5, 0, 0);
 
@@ -41,6 +38,9 @@ public class CornettCore extends OpMode {
     double distance = 0;
     double angleDistance = 0;
 
+    public static double Dp = 0.07;
+    public static double ACp = 10;
+
     public double output = 0, direction = 0, turnPIDOutput = 0;
 
     double xPIDOutput, yPIDOutput, headingPIDOutput;
@@ -49,16 +49,14 @@ public class CornettCore extends OpMode {
         this.robot = robot;
     }
 
-    // TODO: Set up Trajectory Following, simple path following (circle around target), Later Implement Pure Pursuit (Circle Around Robot)
-    // TODO: When running Sync functions allow for heading to finish turning (Maybe not, not an issue right now)
-
     public void tuneTrackWidthIMU (double heading, double direction) {
+        robot.updateAccumulatedHeading();
         MiniPID turnPID = defaultTurnPID;
 
         turnPID.setSetpoint(heading);
         turnPID.setOutputLimits(-1, 1);
 
-        turnPID.setError(heading - robot.IMU.getAccumulatedHeadingInDegrees());
+        turnPID.setError(Math.abs(heading - Math.toRadians(robot.IMU.getAccumulatedHeadingInDegrees())));
 
         turnPIDOutput = turnPID.getOutput(AngleUtil.deNormalizeAngle(robot.IMU.getAccumulatedHeadingInDegrees()));
         output = direction * turnPIDOutput * defaultTurnOutputMultiplier;
@@ -94,7 +92,7 @@ public class CornettCore extends OpMode {
     }
 
     public void rotateSync(double heading, double anglePrecision) {
-            rotateSyncRaw(heading, anglePrecision, defaultTurnPID, defaultTurnOutputMultiplier);
+        rotateSyncRaw(heading, anglePrecision, defaultTurnPID, defaultTurnOutputMultiplier);
     }
 
     public void runToPositionRaw(double x, double y, double heading, MiniPID xPID,
@@ -155,10 +153,61 @@ public class CornettCore extends OpMode {
     }
 
     public synchronized void runToPositionSync(double x, double y, double heading, double allowableDistanceError) throws InterruptedException {
-            runToPositionSyncRaw(
-                    x, y, heading, allowableDistanceError,
-                    defaultXPID, defaultYPID, defaultHeadingPID,
-                    defaultXControlPointMultiplier, defaultYControlPointMultiplier, defaultHeadingControlPointMultiplier);
+        runToPositionSyncRaw(
+                x, y, heading, allowableDistanceError,
+                defaultXPID, defaultYPID, defaultHeadingPID,
+                defaultXControlPointMultiplier, defaultYControlPointMultiplier, defaultHeadingControlPointMultiplier);
+    }
+
+    double t = 0, f = 0;
+
+    public void setDifMotorForward(double targetX, double targetY) {
+        robot.updateOdometry();
+
+        double Dp = 0.07;
+        double ACp = 2.3;
+
+        double xError = targetX - robot.pos.x;
+        double yError = targetY - robot.pos.y;
+        double theta = Math.atan2(yError,xError);
+
+        double distance = Math.sqrt(Math.pow(xError, 2) + Math.pow(yError, 2));
+
+        f = 0 - distance * Dp;  // Could be -distance but Zero is there to model proper P-Loop
+        t = AngleUtil.angleWrap(theta - robot.pos.getHeading()) * ACp;
+
+        double left = f + t;
+        double right = f - t;
+
+        robot.DriveTrain.setMotorPowers(left, right);
+    }
+
+    public void setDifMotorReverse(double targetX, double targetY) {
+        robot.updateOdometry();
+
+        double xError = targetX - robot.pos.x;
+        double yError = targetY - robot.pos.y;
+        double theta = Math.atan2(-yError,-xError);
+
+        double distance = Math.sqrt(Math.pow(xError, 2) + Math.pow(yError, 2));
+
+        f = 0 - distance * Dp;  // Could be -distance but Zero is there to model proper P-Loop
+        t = AngleUtil.angleWrap(theta - robot.pos.getHeading()) * ACp;
+
+        double left = -f + t;
+        double right = -f - t;
+
+        robot.DriveTrain.setMotorPowers(left, right);
+    }
+
+    public void differentialRunToPosition(DIRECTION direction, Point pos) {
+        switch (direction) {
+            case FORWARD:
+                setDifMotorForward(pos.x, pos.y);
+                break;
+            case BACKWARD:
+                setDifMotorReverse(pos.x, pos.y);
+        }
     }
 
     @Override
