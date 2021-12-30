@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
+
+import java.util.ArrayList;
 
 public class Array {
     /**
@@ -39,5 +42,32 @@ public class Array {
         newarr[n] = pose;
 
         return newarr;
+    }
+
+
+    public static ArrayList<Point> reversePointArray(ArrayList<Point> alist) {
+        // Arraylist for storing reversed elements
+        ArrayList<Point> revArrayList = new ArrayList<Point>();
+        for (int i = alist.size() - 1; i >= 0; i--) {
+
+            // Append the elements in reverse order
+            revArrayList.add(alist.get(i));
+        }
+
+        // Return the reversed arraylist
+        return revArrayList;
+    }
+
+    public static ArrayList<Pose2D> reversePose2DArray(ArrayList<Pose2D> alist) {
+        // Arraylist for storing reversed elements
+        ArrayList<Pose2D> revArrayList = new ArrayList<Pose2D>();
+        for (int i = alist.size() - 1; i >= 0; i--) {
+
+            // Append the elements in reverse order
+            revArrayList.add(alist.get(i));
+        }
+
+        // Return the reversed arraylist
+        return revArrayList;
     }
 }

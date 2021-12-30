@@ -56,8 +56,8 @@ public class Pose2D {
     public String toString() {
         return String.format(
                 roundPlaces(x, 1) +
-                        " " + roundPlaces(y, 1) +
-                        " " + roundPlaces(getHeadingInDegrees(), 1));
+                " " + roundPlaces(y, 1) +
+                " " + roundPlaces(getHeadingInDegrees(), 1));
     }
 
     public double getDistanceFrom(Point point) {

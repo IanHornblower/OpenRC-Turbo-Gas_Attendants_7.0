@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.AngleUtil;
 public class Robot extends OpMode {
     private DcMotor backLeft, backRight, frontLeft, frontRight;
 
-    private DcMotor leftEncoder, rightEncoder, lateralEncoder;
+    private DcMotorEx leftEncoder, rightEncoder, lateralEncoder;
 
     private DcMotor liftMotor;
     private Servo boxServo;
@@ -49,60 +49,43 @@ public class Robot extends OpMode {
     public final static double encoderTicksPerRev = 8192;  // Ticks read per revolution of REV Encoder.
     public final static double inchPerTick = 2.0 * Math.PI * R / encoderTicksPerRev;  // Inches traveled per tick moved.
 
-
-    // Velocity
-
-    int cycleToSkip = 20;
-
     public Robot(HardwareMap hardwareMap) {
         hwMap = hardwareMap;
 
-        frontRight = hardwareMap.dcMotor.get("fr");
+        frontRight = hardwareMap.dcMotor.get("front_right_motor");
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft = hardwareMap.dcMotor.get("fl"); // fl
+        frontLeft = hardwareMap.dcMotor.get("front_left_motor");
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backLeft = hardwareMap.dcMotor.get("bl"); // bl
+        backLeft = hardwareMap.dcMotor.get("back_left_motor");
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        backRight = hardwareMap.dcMotor.get("br");
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRight = hardwareMap.dcMotor.get("back_right_motor");
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        liftMotor = hardwareMap.dcMotor.get("lift");
-        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lateralEncoder = hardwareMap.get(DcMotorEx.class, "enc_x");
+        lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        lateralEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lateralEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        boxServo = hardwareMap.servo.get("boxServo");
-
-        intake = hardwareMap.dcMotor.get("intake");
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        intakeServo = hardwareMap.servo.get("intakeServo");
-
-        duck = hardwareMap.dcMotor.get("duck");
-        duck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        duck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        lateralEncoder = frontLeft;
-        //lateralEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        rightEncoder = backRight;
+        rightEncoder = hardwareMap.get(DcMotorEx.class, "enc_right");
         //rightEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftEncoder = backLeft;
-        //leftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        leftEncoder = hardwareMap.get(DcMotorEx.class, "enc_left");
+        leftEncoder.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         stopDrive();
         resetDriveEncoders();
@@ -119,31 +102,7 @@ public class Robot extends OpMode {
 
         DriveTrain = new DriveTrain(this);
         IMU = new IMU(imu);
-        lift = new lift(this);
-        intakeSys = new intake(this);
-        spinMotor = new spinMotor(this);
-        driveController = new Controller(gamepad1);
-        operatorController = new Controller(gamepad2);
-    }
 
-    public DcMotor getLift() {
-        return liftMotor;
-    }
-
-    public Servo getBoxServo() {
-        return boxServo;
-    }
-
-    public Servo getIntakeServo() {
-        return intakeServo;
-    }
-
-    public DcMotor getIntake() {
-        return intake;
-    }
-
-    public DcMotor getDuck() {
-        return duck;
     }
 
     public HardwareMap getHardwareMap() {
@@ -204,6 +163,14 @@ public class Robot extends OpMode {
     private int oldLateralPosition = 0;
 
     public double accumulatedHeading = 0;
+    public double accumulatedDistance = 0;
+
+    public double leftVelocity = 0;
+    public double rightVelocity = 0;
+    public double lateralVelocity = 0;
+
+    public double dxTraveled = 0;
+    public double dyTraveled = 0;
 
     public Pose2D START_POSITION = new Pose2D(0, 0, AngleUtil.interpretAngle(90));  // Default
 
@@ -214,16 +181,14 @@ public class Robot extends OpMode {
 
     public Pose2D pos = START_POSITION;
 
-    public void update() {
-        updateOdometry();
-        updateVelocity();
-        updateAcumulatedHeading();
+    int i = 0;
 
-        driveController.update();
-        operatorController.update();
+    public void pass() {
+        System.out.print(accumulatedDistance);
     }
 
-    public void updateAcumulatedHeading() {
+
+    public void updateAccumulatedHeading() {
         double currentHeading = Math.toDegrees(pos.getHeading());
 
         double dHeading = currentHeading - previousHeading;
@@ -240,7 +205,7 @@ public class Robot extends OpMode {
     }
 
     public void updateOdometry() { // make update() --> odometry() if need be [Merge with UpdateVelocities()
-        currentRightPosition = -rightEncoder.getCurrentPosition(); // Invert in Necessary
+        currentRightPosition = rightEncoder.getCurrentPosition(); // Invert in Necessary
         currentLeftPosition = leftEncoder.getCurrentPosition(); // Invert in Necessary
         currentLateralPosition = lateralEncoder.getCurrentPosition(); // Invert in Necessary
 
@@ -249,7 +214,7 @@ public class Robot extends OpMode {
         int dnLateral = currentLateralPosition - oldLateralPosition;
 
         double dtheta = (dnLeft - dnRight) / L;
-        double dx = (dnLeft+dnRight) / 2.0;
+        double dx = (dnLeft + dnRight) / 2.0;
         double dy = dnLateral - lateralOffset * dtheta;
 
         dtheta *= inchPerTick;
@@ -260,6 +225,8 @@ public class Robot extends OpMode {
         double dxTraveled = dx * Math.cos(pos.heading) - dy * Math.sin(pos.heading);
         double dyTraveled = dx * Math.sin(pos.heading) + dy * Math.cos(pos.heading);
 
+        accumulatedDistance += Math.hypot(dxTraveled, dyTraveled);
+
         pos.x -= dxTraveled;  // Inverted cuz it was negative? :)
         pos.y += dyTraveled;
         pos.heading += dtheta;
@@ -267,48 +234,12 @@ public class Robot extends OpMode {
         oldRightPosition = currentRightPosition;
         oldLeftPosition = currentLeftPosition;
         oldLateralPosition = currentLateralPosition;
-
-        telemetry.addData("XYH", pos.toString());
-        //telemetry.update();
     }
 
-    double oldX = 0;
-    double oldY = 0;
-    double oldH = 0;
-    double oldTime = 0;
-
-    double currentX = 0;
-    double currentY = 0;
-    double currentH = 0;
-    double currentTime = 0;
-
-    public double dx = 0;
-    public double dy = 0;
-    public double dt = 0;
-    public double dTheta = 0;
-    int i = 0;
-
-    public void updateVelocity() { // make update() --> odometry() if need be [Merge With UpdateOdometry()]
-        i++; if(i % cycleToSkip == 0) {
-                oldX = currentX;
-                oldY = currentY;
-                oldH = currentH;
-                oldTime = currentTime;
-
-                currentX = pos.x;
-                currentY = pos.y;
-                currentH = pos.getHeading();
-                currentTime = System.nanoTime()/1e+9;
-
-                dx = currentX - oldX;
-                dy = currentY - oldY;
-                dTheta = currentH - oldH;
-                dt = currentTime - oldTime;
-
-                pos.xVelocity = dx/dt;
-                pos.yVelocity = dy/dt;
-                pos.headingVelocity = dTheta/dt;
-        }
+    public void updateEncoderVelocity() {
+        leftVelocity = leftEncoder.getVelocity()*inchPerTick;
+        rightVelocity = rightEncoder.getVelocity()*inchPerTick;
+        lateralVelocity = lateralEncoder.getVelocity()*inchPerTick;
     }
 
     public void stopDrive() {

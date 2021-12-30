@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.math;
 
-import org.firstinspires.ftc.teamcode.hardware.DriveTrain;
-import org.firstinspires.ftc.teamcode.hardware.Robot;
-
 import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 
 public class Point {
@@ -29,8 +26,20 @@ public class Point {
         y *= scaleFactor;
     }
 
+    public Point scalar(double scaleFactor) {
+        return new Point(x * scaleFactor, y * scaleFactor);
+    }
+
     public Point add(Point point) {
         return new Point(x+point.x, y+point.y);
+    }
+
+    public Point subtract(Point point) {
+        return new Point(x-point.x, y-point.y);
+    }
+
+    public double dot(Point other) {
+        return x * other.x + y * other.y;
     }
 
     public double getY() {
@@ -46,9 +55,9 @@ public class Point {
     }
 
     public static boolean inRange(Point currPoint, Point endPoint, double range) {
-        double dist = getDistance(currPoint, endPoint);
+         double dist = getDistance(currPoint, endPoint);
 
-        return dist < range;
+         return dist < range;
     }
 
     public double atan2() { // Inverted and Negated Y
