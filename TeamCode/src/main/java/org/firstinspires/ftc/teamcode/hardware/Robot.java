@@ -240,7 +240,7 @@ public class Robot extends OpMode {
     }
 
     public void updateOdometry() {
-        currentRightPosition = -rightEncoder.getCurrentPosition(); // Invert in Necessary
+        currentRightPosition = rightEncoder.getCurrentPosition(); // Invert in Necessary
         currentLeftPosition = leftEncoder.getCurrentPosition(); // Invert in Necessary
         currentLateralPosition = lateralEncoder.getCurrentPosition(); // Invert in Necessary
 

@@ -43,8 +43,20 @@ public class Blinkin {
     public static synchronized void updateLightTimer(int currentTime, boolean auto) {
         int matchLength = auto ? 30 : 150;
         currentTime = matchLength-(currentTime/1000);
-        Log.i("Blinkin Time", String.valueOf(currentTime));
+        Log.i("Blinkin T" + "Time", String.valueOf(currentTime));
         switch(currentTime) {
+            case(35):
+            case(32):
+                Driver.setPattern(BlinkinPattern.RED);
+                break;
+            case(34):
+            case(31):
+                Driver.setPattern(BlinkinPattern.BLUE);
+                break;
+            case(33):
+            case(30):
+                Driver.setPattern(BlinkinPattern.GREEN);
+                break;
             case(5):
             case(3):
             case(1):
