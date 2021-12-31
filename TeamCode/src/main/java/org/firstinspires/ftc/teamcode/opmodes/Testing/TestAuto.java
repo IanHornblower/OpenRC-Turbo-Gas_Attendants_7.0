@@ -33,7 +33,6 @@ public class TestAuto extends LinearOpMode {
 
         while(opModeIsActive()) {
             robot.updateOdometry();
-            robot.updateVelocity();
 
             CornettCore motionProfile = new CornettCore(robot);
             Trajectory path1 = new Trajectory(robot, robot.START_POSITION);
@@ -42,7 +41,7 @@ public class TestAuto extends LinearOpMode {
             path1.addWaypoint(new Pose2D(-16, 32, 0));
             path1.addWaypoint(new Pose2D(-16, 48, 0));
 
-            path1.followPath(Trajectory.PATH_TYPE.DIFFERENTIAL_PURE_PURSUIT, 5, 1);
+            path1.followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.FORWARD, 5, 1);
 
             stop();
         }
