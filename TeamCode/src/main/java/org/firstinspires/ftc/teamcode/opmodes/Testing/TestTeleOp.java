@@ -67,8 +67,11 @@ public class TestTeleOp extends LinearOpMode {
                 robot.stopDrive();
             }
 
-            //telemetry.addData("\nXYH", robot.pos.toString());
-            //telemetry.update();
+            telemetry.addData("\nXYH", robot.pos.toString());
+            telemetry.addData("Left", robot.getLeftEncoder().getCurrentPosition());
+            telemetry.addData("Right", robot.getRightEncoder().getCurrentPosition());
+            telemetry.addData("Back", robot.getFrontEncoder().getCurrentPosition());
+            telemetry.update();
         }
     }
 }

@@ -39,7 +39,7 @@ public class CornettCore extends OpMode {
     double angleDistance = 0;
 
     public static double Dp = 0.07;
-    public static double ACp = 10;
+    public static double ACp = 1;
 
     public double output = 0, direction = 0, turnPIDOutput = 0;
 

@@ -24,7 +24,8 @@ public class TrajectoryAutoTest extends LinearOpMode {
 
         Trajectory joe  = new Trajectory(robot, robot.START_POSITION);
 
-        joe.addWaypoint(new Point(0, 48));
+        joe.addWaypoint(new Point(0, 24));
+        joe.addWaypoint(new Point(24, 36));
         joe.addWaypoint(new Point(48, 48));
 
         ArrayList<Function> list = new ArrayList<>();
@@ -49,9 +50,13 @@ public class TrajectoryAutoTest extends LinearOpMode {
         while(opModeIsActive()) {
             robot.updateOdometry();
             
-            joe.at(list).followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.FORWARD, 8, 1);
+            joe.at(list).followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.BACKWARD, 8, 1);
 
-            stop();
+            motionProfile.runToPositionSync(0,0, 0, 1);
+
+            sleep(10000);
+
+            //stop();
         }
     }
 }
