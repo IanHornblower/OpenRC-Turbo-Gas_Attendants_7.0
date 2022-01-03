@@ -26,7 +26,7 @@ public class TrajectoryAutoTest extends LinearOpMode {
 
         joe.addWaypoint(new Point(0, 24));
         joe.addWaypoint(new Point(24, 36));
-        joe.addWaypoint(new Point(48, 48));
+        joe.addWaypoint(new Point(24, 48));
 
         ArrayList<Function> list = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class TrajectoryAutoTest extends LinearOpMode {
             
             joe.at(list).followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.BACKWARD, 8, 1);
 
-            motionProfile.runToPositionSync(0,0, 0, 1);
+            motionProfile.runToPositionSync(0,0, AngleUtil.interpretAngle(90), 1);
 
             sleep(10000);
 
