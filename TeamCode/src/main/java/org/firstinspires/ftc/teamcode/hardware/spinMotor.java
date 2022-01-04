@@ -20,21 +20,15 @@ public class spinMotor {
         this.duck = robot.getDuck();
     }
 
-    public void run(boolean run) {
-        if(run) {
-            robot.getDuck().setPower(speed*leftMult);
+    public void run(boolean left, boolean right) {
+        if(left) {
+            duck.setPower(-1.0);
+        }
+        else if (right) {
+            duck.setPower(1);
         }
         else {
-            robot.getDuck().setPower(0);
-        }
-    }
-
-    public void reverse(boolean run) {
-        if(run) {
-            robot.getDuck().setPower(-speed*leftMult);
-        }
-        else {
-            robot.getDuck().setPower(0);
+            duck.setPower(0);
         }
     }
 

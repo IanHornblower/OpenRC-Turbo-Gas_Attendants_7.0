@@ -18,45 +18,15 @@ public class TrajectoryAutoTest extends LinearOpMode {
         Robot robot = new Robot(hardwareMap);
         CornettCore motionProfile = new CornettCore(robot);
 
-        robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(90)));
+        robot.setSTART_POSITION(new Pose2D(63, -36, AngleUtil.interpretAngle(0)));
 
         // Create Trajectories and Function Lists
-
-        Trajectory joe  = new Trajectory(robot, robot.START_POSITION);
-
-        joe.addWaypoint(new Point(0, 24));
-        joe.addWaypoint(new Point(24, 36));
-        joe.addWaypoint(new Point(24, 48));
-
-        ArrayList<Function> list = new ArrayList<>();
-
-        list.add(new Function(12, () -> {
-            telemetry.addLine("AT 12: \t" + robot.accumulatedDistance);
-            telemetry.update();
-        }));
-
-        list.add(new Function(24,() -> {
-            telemetry.addLine("do");
-            telemetry.update();
-        }));
-
-        list.add(new Function(36, () -> {
-            telemetry.addLine("AT 36: \t" + robot.accumulatedDistance);
-            telemetry.update();
-        }));
 
         waitForStart();
 
         while(opModeIsActive()) {
-            robot.updateOdometry();
-            
-            joe.at(list).followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.BACKWARD, 8, 1);
 
-            motionProfile.runToPositionSync(0,0, AngleUtil.interpretAngle(90), 1);
-
-            sleep(10000);
-
-            //stop();
+            stop();
         }
     }
 }
