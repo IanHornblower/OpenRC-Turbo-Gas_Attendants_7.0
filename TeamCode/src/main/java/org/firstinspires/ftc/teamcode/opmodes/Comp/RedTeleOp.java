@@ -26,12 +26,20 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 @TeleOp(name = "RedSide TeleOp", group = "Comp")
 public class RedTeleOp extends LinearOpMode {
 
-    public static double turnK = 1;
-    public static double moveK = 1;
+    private enum DRIVE {
+        FIELD,
+        ROBOT
+    }
+
+    DRIVE driveState = DRIVE.FIELD;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap);
+
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
 
         robot.setSTART_POSITION(PoseStorage.autoEnd);
 
@@ -39,8 +47,7 @@ public class RedTeleOp extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            FtcDashboard dashboard = FtcDashboard.getInstance();
-            telemetry = dashboard.getTelemetry();
+
             robot.updateOdometry();
 
             // Drive Train
@@ -49,23 +56,18 @@ public class RedTeleOp extends LinearOpMode {
             double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            //moveK = 1 - gamepad1.left_trigger;
-            //turnK = 1 - gamepad1.right_trigger;
 
+            if(driveState == DRIVE.FIELD) {
+                robot.DriveTrain.driveFieldCentric(leftX, leftY, turn, robot.START_POSITION.heading-Math.PI);
+            }
+            else {
+                robot.DriveTrain.setMotorPowers(leftX, leftY, turn);
+            }
 
-            robot.DriveTrain.setMotorPowers(leftX*moveK, leftY*moveK, turn*turnK);
 
             // Duck Motor
 
-                    if (gamepad2.left_bumper) {
-                        robot.getDuck().setPower(1);
-                    }
-                    else if(gamepad2.right_bumper) {
-                        robot.getDuck().setPower(-1);
-                    }
-                    else {
-                        robot.getDuck().setPower(0);
-                    }
+            robot.spinMotor.run(gamepad2.left_bumper, gamepad2.right_bumper);
 
             // Intake
 
@@ -75,7 +77,7 @@ public class RedTeleOp extends LinearOpMode {
 
             if(gamepad1.dpad_left || gamepad1.dpad_right) robot.intakeSys.inAirIntake();
 
-            robot.intakeSys.run(gamepad2.right_trigger > 0.1, gamepad2.right_trigger > 0.1);
+            robot.intakeSys.run(gamepad2.left_trigger > 0.1, gamepad2.right_trigger > 0.1);
 
             telemetry.addData("\nXYH", robot.pos.toString());
             telemetry.update();

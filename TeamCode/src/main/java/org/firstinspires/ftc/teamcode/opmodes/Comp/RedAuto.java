@@ -37,11 +37,11 @@ public class RedAuto extends LinearOpMode {
         camera.initPipeline();
         camera.startCamera();
 
-       camera.startCameraStream(0);
+        camera.startCameraStream(0);
 
-        //CameraStreamServer.getInstance().setSource(camera.getCamera());
+        CameraStreamServer.getInstance().setSource(camera.getCamera());
 
-        robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(0)));  // Change
+        robot.setSTART_POSITION(new Pose2D(63, -36, AngleUtil.interpretAngle(0)));
 
         // Create Trajectories
 
@@ -53,152 +53,38 @@ public class RedAuto extends LinearOpMode {
         telemetry.addData("Location", camera.sDeterminePosition());
         telemetry.update();
 
+        CornettCore motionProfile = new CornettCore(robot);
+
         waitForStart();
 
         telemetry.clear();
         telemetry.update();
 
         while(opModeIsActive()) {
-           ////robot.updateOdometry();
 
-           ////CornettCore motionProfile = new CornettCore(robot);
+            motionProfile.runToPositionSync(39, -29, Math.toRadians(315),1);
+            robot.DriveTrain.stopDrive();
+            sleep(2000);
 
-            switch(AutoConfig.side) {
-                case RED:
-                    switch(AutoConfig.type) {
-                        case DUCK:
+            motionProfile.runToPositionSync(52, -62, Math.toRadians(0), 1);
+            robot.DriveTrain.stopDrive();
 
-                            switch(camera.determinePosition()) {
-                                case A:
-                                    camera.shutdownPipeline();
+            robot.DriveTrain.setMotorPowers(-0.3, -0.2);
+            sleep(400);
+            robot.DriveTrain.stopDrive();
 
+            sleep(500);
+            robot.getDuck().setPower(-0.5);
+            sleep(3000);
+            robot.getDuck().setPower(0.0);
 
-
-                                    break;
-
-                                case B:
-
-                                case C:
-
-                                default:
-                            }
-
-
-                            break;
-
-                        case WAREHOUSE:
-
-                            switch(camera.determinePosition()) {
-                                case A:
-
-                                    break;
-
-                                case B:
-
-                                case C:
-
-                                default:
-                            }
-
-                            break;
-
-                        default:
-
-                            break;
-                    }
-                    break;
-                case BLUE:
-                    // Do
-                    switch(AutoConfig.type) {
-                        case DUCK:
-
-                            switch(camera.determinePosition()) {
-                                case A:
-
-
-
-
-                                    break;
-
-                                case B:
-                                    camera.shutdownPipeline();
-
-                                case C:
-
-                                default:
-                            }
-
-
-                            break;
-
-                        case WAREHOUSE:
-
-                            switch(camera.determinePosition()) {
-                                case A:
-
-                                    break;
-
-                                case B:
-
-                                case C:
-
-                                default:
-                            }
-
-                            break;
-
-                        default:
-
-                            break;
-                    }
-                    break;
-            }
-
-            switch(AutoConfig.type) {
-                case DUCK:
-
-                    switch(camera.determinePosition()) {
-                        case A:
-                            camera.shutdownPipeline();
-
-
-
-                            break;
-
-                        case B:
-
-                        case C:
-
-                        default:
-                    }
-
-
-                    break;
-
-                case WAREHOUSE:
-
-                    switch(camera.determinePosition()) {
-                        case A:
-
-                            break;
-
-                        case B:
-
-                        case C:
-
-                        default:
-                    }
-
-                    break;
-
-                default:
-
-                    break;
-            }
+            motionProfile.runToPositionSync(38, -59, Math.toRadians(90), 1);
+            robot.DriveTrain.stopDrive();
 
             PoseStorage.autoEnd = robot.pos;
+            camera.shutdownPipeline();
 
-            //stop();
+            stop();
         }
     }
 }

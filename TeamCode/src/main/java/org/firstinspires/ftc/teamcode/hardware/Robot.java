@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import android.os.health.ServiceHealthStats;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 
@@ -38,13 +42,15 @@ public class Robot extends OpMode {
     public Controller driveController;
     public Controller operatorController;
 
+    public FtcDashboard dashboard;
+
     public enum controlType{ROBOT, FIELD}
 
     // Robot Kinematics
 
     // Odmometric Constraints
     public final static double L = 11;  // separation between left and right Encoder.
-    public final static double lateralOffset = -6.33;  // offset between origin of robot and lateral Encoder.
+    public final static double lateralOffset = -6.7;  // offset between origin of robot and lateral Encoder.
     public final static double R = 0.688975;  // Encoder wheel radius.
     public final static double encoderTicksPerRev = 8192;  // Ticks read per revolution of REV Encoder.
     public final static double inchPerTick = 2.0 * Math.PI * R / encoderTicksPerRev;  // Inches traveled per tick moved.
@@ -119,6 +125,8 @@ public class Robot extends OpMode {
         driveController = new Controller(gamepad1);
         operatorController = new Controller(gamepad2);
 
+        dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
     }
 
     public HardwareMap getHardwareMap() {
@@ -265,6 +273,19 @@ public class Robot extends OpMode {
         pos.x -= dxTraveled;  // Inverted cuz it was negative? :)
         pos.y += dyTraveled;
         pos.heading += dtheta;
+
+        /*
+        TelemetryPacket packet = new TelemetryPacket();
+
+        Field field = new Field(packet);
+        field.createCircularRobot(this.pos);
+
+        packet = field.getPacket();
+
+        packet.addLine("XYH: " + pos.toString());
+
+        dashboard.sendTelemetryPacket(packet);
+        */
 
         oldRightPosition = currentRightPosition;
         oldLeftPosition = currentLeftPosition;

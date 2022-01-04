@@ -23,104 +23,76 @@ public class lift {
     MiniPID liftPID;
     Robot robot;
 
-    public static double P = 0.02, I = 0, D = 0, F = 0;
+    public static double P = 0.02, I = 0, D = 0;
 
-    public static double threshold = 20;
+    public static double threshold = 10;
 
-    public static double liftUP = 100;
+    public static double liftStart = 0;
+    public static double liftPrimed = 100;
     public static double liftOne = 0;
     public static double liftTwo = 0;
     public static double liftThree = 0;
 
-    public static double lowest = 0;
-    public static double levelOne = 0.3;
-    public static double levelTwo = 0.5;
-    public static double levelThree = 0.8;
+    public static double servoStart = 0;
+    public static double servoPrimed = 0;
+    public static double servoDropped = 0;
 
-    public enum SERVOSTATE {INTAKE_LEVEL, ONE, TWO, THREE};
+    public enum LIFT {
+        START,
+        PRIMED,
+        D1,
+        D2,
+        D3
+    }
 
-    public SERVOSTATE state;
+    public enum SERVO {
+        START,
+        PRIMED,
+        DROPPED
+    }
+
+    LIFT liftState;
+    SERVO servoState;
 
     public lift(Robot robot) {
         this.lift = robot.getLift();
         this.boxServo = robot.getBoxServo();
         this.robot = robot;
-        state = SERVOSTATE.INTAKE_LEVEL;
         liftPID = new MiniPID(P, I, D);
+        liftState = LIFT.START;
+        servoState = SERVO.START;
     }
     
     public void setPosition(double position) {
-        //do {
+        if(Math.abs(robot.getLift().getCurrentPosition() - position) < threshold) {
             liftPID.setSetpoint(position);
-
             liftPID.setError(position - robot.getLift().getCurrentPosition());
-
-            robot.getLift().setPower(liftPID.getOutput()*F);
-
-
-      //  }while(position != lift.getCurrentPosition());
-        
+            robot.getLift().setPower(liftPID.getOutput());
+        }
+        else robot.getLeftEncoder().setPower(0);
     }
-/**
 
-    public void setServoPosition() {
-        switch (state) {
-            case INTAKE_LEVEL:
-                robot.getBoxServo().setPosition(lowest);
-                break;
-            case ONE:
-                robot.getBoxServo().setPosition(levelOne);
-                break;
-            case TWO:
-                robot.getBoxServo().setPosition(levelTwo);
-                break;
-            case THREE:
-                robot.getBoxServo().setPosition(levelThree);
-                break;
+    public void prime() {
+        if (liftState == LIFT.START) {
+            setPosition(liftPrimed);
+            if (Math.abs(robot.getLift().getCurrentPosition() - liftPrimed) < threshold) {
+                boxServo.setPosition(servoPrimed);
+                liftState = LIFT.PRIMED;
+            }
+        } else {
+            setPosition(liftPrimed);
+            boxServo.setPosition(servoPrimed);
+            if(Math.abs(robot.getLift().getCurrentPosition() - liftPrimed) < threshold) liftState = LIFT.PRIMED;
         }
     }
- */
-
-    public void setServoState(SERVOSTATE state) {
-        this.state = state;
-    }
-
-    public SERVOSTATE getState() {
-        return state;
-    }
-
-    public void primeLift() {
-        setPosition(liftUP);
-    }
-
-    public void returnLift() {
-        setServoState(SERVOSTATE.INTAKE_LEVEL);
-        setPosition(lowest);
-    }
-/**
-
-    public void scoreFreight() { // Add More when ready :)
-        switch (state) {
-            case ONE:
-                setPosition(liftOne);
-                if(Math.abs(robot.getLift().getCurrentPosition() - liftOne) > threshold) {
-                    setServoPosition();
-                }
+    public void retract() {
+        switch (liftState) {
+            case START:
+                liftState = LIFT.START;
                 break;
-            case TWO:
-                setPosition(liftTwo);
-                if(Math.abs(robot.getLift().getCurrentPosition() - liftTwo) > threshold) {
-                    setServoPosition();
-                }
-            case THREE:
-                setPosition(liftThree);
-                if(Math.abs(robot.getLift().getCurrentPosition() - liftThree) > threshold) {
-                    setServoPosition();
-                }
-            default:
-                setServoState(SERVOSTATE.INTAKE_LEVEL);
-                setPosition(lowest);
+            case PRIMED:
+                boxServo.setPosition(servoStart);
+                setPosition(liftStart);
         }
     }
- */
 }
