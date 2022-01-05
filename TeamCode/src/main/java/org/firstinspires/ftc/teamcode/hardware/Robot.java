@@ -55,6 +55,8 @@ public class Robot extends OpMode {
     public final static double encoderTicksPerRev = 8192;  // Ticks read per revolution of REV Encoder.
     public final static double inchPerTick = 2.0 * Math.PI * R / encoderTicksPerRev;  // Inches traveled per tick moved.
 
+    public static boolean dashboardTelemetry = false;
+
     public Robot(HardwareMap hardwareMap) {
         hwMap = hardwareMap;
 
@@ -125,8 +127,10 @@ public class Robot extends OpMode {
         driveController = new Controller(gamepad1);
         operatorController = new Controller(gamepad2);
 
-        dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
+        if(dashboardTelemetry) {
+            dashboard = FtcDashboard.getInstance();
+            telemetry = dashboard.getTelemetry();
+        }
     }
 
     public HardwareMap getHardwareMap() {
