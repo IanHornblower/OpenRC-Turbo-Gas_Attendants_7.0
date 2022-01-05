@@ -53,7 +53,7 @@ public class DriveTrain {
 
         calculatePosition(
                 vector.hypot(),
-                vector.atan2() - robot.pos.getHeading()+modTheta + adjustedAngle,
+                vector.atan2() - robot.IMU.getIMUHeading()+modTheta + adjustedAngle,
                 turn);
     }
 
