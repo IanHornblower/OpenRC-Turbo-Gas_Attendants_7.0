@@ -22,64 +22,84 @@ import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera;
 
-@Autonomous(name = "RedSide Auto", group = "Auto")
-public class RedAuto extends LinearOpMode {
+@Autonomous(name = "All Auto(s)", group = "Auto")
+public class Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addLine("Starting Hardware Map & Camera");
-        telemetry.update();
-
         Robot robot = new Robot(hardwareMap);
+        CornettCore motionProfile = new CornettCore(robot);
         FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
+
+        robot.telemetry.addLine("Starting Hardware Map & Camera");
+        robot.telemetry.update();
 
         camera.initWebCamera();
         camera.initPipeline();
         camera.startCamera();
 
         camera.startCameraStream(0);
-
         CameraStreamServer.getInstance().setSource(camera.getCamera());
-
-        robot.setSTART_POSITION(new Pose2D(63, -36, AngleUtil.interpretAngle(0)));
 
         // Create Trajectories
 
-        telemetry.clear();
-        telemetry.addLine("Waiting For Start");
-        telemetry.addLine(
+        robot.telemetry.clear();
+        robot.telemetry.addLine("Waiting For Start");
+        robot.telemetry.addLine(
                 "Autonomous Configuration: \n" +
                          "Side: RED");
-        telemetry.addData("Location", camera.sDeterminePosition());
-        telemetry.update();
-
-        CornettCore motionProfile = new CornettCore(robot);
+        robot.telemetry.addData("Location", camera.sDeterminePosition());
+        robot.telemetry.update();
 
         waitForStart();
 
-        telemetry.clear();
-        telemetry.update();
+        robot.telemetry.clear();
+        robot.telemetry.update();
 
         while(opModeIsActive()) {
 
-            motionProfile.runToPositionSync(39, -29, Math.toRadians(315),1);
-            robot.DriveTrain.stopDrive();
-            sleep(2000);
+        switch(AutoConfig.side) {
+            case RED:
+                /*
+                 * Init
+                 */
 
-            motionProfile.runToPositionSync(52, -62, Math.toRadians(0), 1);
-            robot.DriveTrain.stopDrive();
+                robot.setSTART_POSITION(new Pose2D(63, -36, AngleUtil.interpretAngle(0)));
 
-            robot.DriveTrain.setMotorPowers(-0.3, -0.2);
-            sleep(400);
-            robot.DriveTrain.stopDrive();
+                /*
+                 * Run Auto
+                 */
 
-            sleep(500);
-            robot.getDuck().setPower(-0.5);
-            sleep(3000);
-            robot.getDuck().setPower(0.0);
+                motionProfile.runToPositionSync(39, -29, Math.toRadians(315),1);
+                robot.DriveTrain.stopDrive();
+                sleep(2000);
 
-            motionProfile.runToPositionSync(38, -59, Math.toRadians(90), 1);
-            robot.DriveTrain.stopDrive();
+                motionProfile.runToPositionSync(52, -62, Math.toRadians(0), 1);
+                robot.DriveTrain.stopDrive();
+
+                robot.DriveTrain.setMotorPowers(-0.3, -0.2);
+                sleep(400);
+                robot.DriveTrain.stopDrive();
+
+                sleep(500);
+                robot.getDuck().setPower(-0.5);
+                sleep(3000);
+                robot.getDuck().setPower(0.0);
+
+                motionProfile.runToPositionSync(38, -59, Math.toRadians(90), 1);
+                robot.DriveTrain.stopDrive();
+                break;
+
+            case BLUE:
+                switch(AutoConfig.park) {
+                    case WAREHOUSE:
+                        break;
+                    case STORAGE:
+                        break;
+                }
+                break;
+        }
+
 
             PoseStorage.autoEnd = robot.pos;
             camera.shutdownPipeline();
