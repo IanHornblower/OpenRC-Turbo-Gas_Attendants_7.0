@@ -127,8 +127,9 @@ public class Robot extends OpMode {
         driveController = new Controller(gamepad1);
         operatorController = new Controller(gamepad2);
 
+        dashboard = FtcDashboard.getInstance();
+
         if(dashboardTelemetry) {
-            dashboard = FtcDashboard.getInstance();
             telemetry = dashboard.getTelemetry();
         }
     }
