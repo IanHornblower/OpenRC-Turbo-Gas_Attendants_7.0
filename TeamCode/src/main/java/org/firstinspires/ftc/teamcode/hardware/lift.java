@@ -23,7 +23,7 @@ public class lift {
     MiniPID liftPID;
     Robot robot;
 
-    public static double P = 0.02, I = 0, D = 0;
+    public static double P = 0.0, I = 0, D = 0;
 
     public static double threshold = 10;
 
@@ -62,14 +62,22 @@ public class lift {
         liftState = LIFT.START;
         servoState = SERVO.START;
     }
+
+    public void setLiftPID(MiniPID pid) {
+        this.liftPID = pid;
+    }
+
+    public void drop() {
+        boxServo.setPosition(servoDropped);
+    }
     
     public void setPosition(double position) {
-        if(Math.abs(robot.getLift().getCurrentPosition() - position) < threshold) {
+        //if(Math.abs(robot.getLift().getCurrentPosition() - position) < threshold) {
             liftPID.setSetpoint(position);
-            liftPID.setError(position - robot.getLift().getCurrentPosition());
+            liftPID.setError(position - -robot.getLift().getCurrentPosition());
             robot.getLift().setPower(liftPID.getOutput());
-        }
-        else robot.getLeftEncoder().setPower(0);
+        //}
+        //else robot.getLift().setPower(0);
     }
 
     public void prime() {
@@ -88,7 +96,6 @@ public class lift {
     public void retract() {
         switch (liftState) {
             case START:
-                liftState = LIFT.START;
                 break;
             case PRIMED:
                 boxServo.setPosition(servoStart);
