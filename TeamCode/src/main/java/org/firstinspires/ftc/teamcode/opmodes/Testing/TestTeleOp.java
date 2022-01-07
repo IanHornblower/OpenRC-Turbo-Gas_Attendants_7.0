@@ -5,12 +5,15 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.Controller;
+import org.firstinspires.ftc.teamcode.util.MiniPID;
+
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
 
 @Config
@@ -19,11 +22,18 @@ public class TestTeleOp extends LinearOpMode {
 
     public static double position = 0;
 
+    public static double p = 0.01, i = 0, d = 0;
+
     @Override
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap);
 
         robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(90)));
+
+        robot.getLift().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.getLift().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        robot.lift.setLiftPID(new MiniPID(p, i, d));
 
         waitForStart();
 
@@ -36,8 +46,6 @@ public class TestTeleOp extends LinearOpMode {
 
             Field field = new Field(packet);
 
-            robot.lift.setPosition(position);
-
             robot.updateOdometry();
             robot.updateAccumulatedHeading();
 
@@ -45,7 +53,7 @@ public class TestTeleOp extends LinearOpMode {
             double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
             double turn = Controller.deadZone(gamepad1.right_stick_x, 0.1);
 
-            robot.DriveTrain.driveFieldCentric(0, leftY, turn);
+            /*
 
             if(gamepad1.square) {
                 robot.getFrontLeft().setPower(1);
@@ -67,10 +75,17 @@ public class TestTeleOp extends LinearOpMode {
                 robot.stopDrive();
             }
 
-            telemetry.addData("\nXYH", robot.pos.toString());
-            telemetry.addData("Left", robot.getLeftEncoder().getCurrentPosition());
-            telemetry.addData("Right", robot.getRightEncoder().getCurrentPosition());
-            telemetry.addData("Back", robot.getFrontEncoder().getCurrentPosition());
+             */
+
+            robot.lift.setLiftPID(new MiniPID(p, i, d));
+            robot.lift.setPosition(position);
+
+            telemetry.addData("Lift ENC", -robot.getLift().getCurrentPosition());
+
+            //telemetry.addData("\nXYH", robot.pos.toString());
+            //telemetry.addData("Left", robot.getLeftEncoder().getCurrentPosition());
+            //telemetry.addData("Right", robot.getRightEncoder().getCurrentPosition());
+            //telemetry.addData("Back", robot.getFrontEncoder().getCurrentPosition());
             telemetry.update();
         }
     }

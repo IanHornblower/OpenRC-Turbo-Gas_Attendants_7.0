@@ -82,7 +82,7 @@ public class Robot extends OpMode {
 
         liftMotor = hardwareMap.dcMotor.get("lift");
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         boxServo = hardwareMap.servo.get("boxServo");

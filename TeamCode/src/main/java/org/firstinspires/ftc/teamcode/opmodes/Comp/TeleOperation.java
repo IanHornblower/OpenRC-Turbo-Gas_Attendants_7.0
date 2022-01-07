@@ -33,8 +33,21 @@ public class TeleOperation extends LinearOpMode {
         ROBOT
     }
 
+    public static enum LIFTSTATE {
+        ONE,
+        TWO,
+        THREE;
+    }
+
+    public static enum TELEOPSTATE {
+        START,
+        PRIME,
+
+    }
+
     DRIVE driveState = DRIVE.FIELD;
 
+    final LIFTSTATE[] lift = {LIFTSTATE.ONE};
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -56,6 +69,28 @@ public class TeleOperation extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
+            Thread t1 = new Thread(() -> {
+                switch (lift[0]) {
+                    case ONE:
+                        sleep(200);
+                        if(gamepad2.dpad_right) lift[0] = LIFTSTATE.TWO;
+                        if(gamepad2.dpad_left) lift[0] = LIFTSTATE.THREE;
+                        break;
+                    case TWO:
+                        sleep(200);
+                        if(gamepad2.dpad_right) lift[0] = LIFTSTATE.THREE;
+                        if(gamepad2.dpad_left) lift[0]  = LIFTSTATE.ONE;
+                        break;
+                    case THREE:
+                        sleep(200);
+                        if(gamepad2.dpad_right)  lift[0] = LIFTSTATE.ONE;
+                        if(gamepad2.dpad_left) lift[0] = LIFTSTATE.TWO;
+                        break;
+                }
+            });
+
+            t1.start();
+
             robot.updateOdometry();
 
             // Drive Train
@@ -74,7 +109,6 @@ public class TeleOperation extends LinearOpMode {
             }
 
             // Duck Motor
-
             robot.spinMotor.run(gamepad2.left_bumper, gamepad2.right_bumper);
 
             // Intake
@@ -87,6 +121,31 @@ public class TeleOperation extends LinearOpMode {
 
             robot.intakeSys.run(gamepad2.left_trigger > 0.1, gamepad2.right_trigger > 0.1);
 
+            // Lift
+
+            if(gamepad2.square) {
+                switch (lift[0]) {
+                    case ONE:
+
+                    case TWO:
+                        System.out.println(lift[0].toString());
+                    case THREE:
+                        System.out.println(lift[0].toString());
+                }
+            }
+
+            if(gamepad2.dpad_up) {
+                robot.lift.prime();
+            }
+            else if(gamepad2.dpad_down) {
+                robot.lift.retract();
+            }
+
+            if(gamepad2.cross) {
+                robot.lift.drop();
+            }
+
+            telemetry.addData("Lift Level", lift[0].toString());
             telemetry.addData("Drive State", driveState.toString());
             telemetry.update();
         }
