@@ -96,7 +96,11 @@ public class Trajectory {
                 while(robot.accumulatedDistance <= list.get(finalI).distance) {
                     robot.pass();
                 }
-                list.get(finalI).execute();
+                try {
+                    list.get(finalI).execute();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
             t1.start();
         }

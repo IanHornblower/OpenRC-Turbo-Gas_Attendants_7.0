@@ -21,17 +21,21 @@ public class CornettCore extends OpMode {
 
     public double defaultTurnOutputMultiplier = 1;
 
-    public static double xP = 0.3;
-    public static double yP = 0.3;
+    public static double xP = 0.17;
+    public static double yP = 0.17;
     public static double headingP = 0.5; // 0.04
 
-    public static double xI = 0.01;
-    public static double yI = 0.01;
+    public static double xI = 0;
+    public static double yI = 0;
     public static double headingI = 0.001; // 0.01
 
-    MiniPID defaultXPID = new MiniPID(xP, xI,0);
-    MiniPID defaultYPID = new MiniPID(yP, yI,0);
-    MiniPID defaultHeadingPID = new MiniPID(headingP, headingI,0);
+    public static double xD = 0;
+    public static double yD = 0;
+    public static double headingD = 0.0; // 0.01
+
+    MiniPID defaultXPID = new MiniPID(xP, xI,xD);
+    MiniPID defaultYPID = new MiniPID(yP, yI,yD);
+    MiniPID defaultHeadingPID = new MiniPID(headingP, headingI, headingD);
 
     public static double defaultXControlPointMultiplier = 1;
     public static double defaultYControlPointMultiplier = 1;

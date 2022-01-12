@@ -1,12 +1,17 @@
 package org.firstinspires.ftc.teamcode.opmodes.Comp;
 
+import static org.firstinspires.ftc.teamcode.util.Time.timeout;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamServer;
+import org.firstinspires.ftc.robotcore.internal.system.RefCounted;
 import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.control.CornettCore;
+import org.firstinspires.ftc.teamcode.control.Trajectory;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 
@@ -51,6 +56,26 @@ public class Auto extends LinearOpMode {
             case RED:
                 switch(MatchConfig.park) {
                     case WAREHOUSE:
+                        /*
+                         * Init
+                         */
+
+                        robot.setSTART_POSITION(new Pose2D(63, 13, AngleUtil.interpretAngle(0)));
+
+                        /*
+                         * Run Auto
+                         */
+
+                        motionProfile.runToPositionSync(36, 5, Math.toRadians(45), 1);
+
+                        Trajectory toWarehouse = new Trajectory(robot, new Pose2D(36, 5, Math.toRadians(45)));
+
+                        toWarehouse.addWaypoint(new Point(60.0, 12.0));
+                        toWarehouse.addWaypoint(new Point(72, 30));
+                        toWarehouse.addWaypoint(new Point(72, 45));
+
+                        toWarehouse.followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.FORWARD, 8, 1);
+
                         break;
                     case STORAGE:
                         /*
@@ -67,10 +92,10 @@ public class Auto extends LinearOpMode {
                         robot.DriveTrain.stopDrive();
                         sleep(2000);
 
-                        motionProfile.runToPositionSync(52, -62, Math.toRadians(0), 1);
+                        motionProfile.runToPositionSync(50, -62, Math.toRadians(0), 1);
                         robot.DriveTrain.stopDrive();
 
-                        robot.DriveTrain.setMotorPowers(-0.3, -0.2);
+                        robot.DriveTrain.setMotorPowers(-0.2, -0.3);
                         sleep(400);
                         robot.DriveTrain.stopDrive();
 
@@ -79,7 +104,7 @@ public class Auto extends LinearOpMode {
                         sleep(3000);
                         robot.getDuck().setPower(0.0);
 
-                        motionProfile.runToPositionSync(38, -59, Math.toRadians(90), 1);
+                        motionProfile.runToPositionSync(34, -59, Math.toRadians(0), 1);
                         robot.DriveTrain.stopDrive();
                         break;
                 }

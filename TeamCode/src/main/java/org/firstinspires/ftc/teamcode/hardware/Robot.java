@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
+import org.firstinspires.ftc.teamcode.util.Time;
 
 public class Robot extends OpMode {
     private DcMotorEx backLeft, backRight, frontLeft, frontRight;
@@ -49,8 +50,8 @@ public class Robot extends OpMode {
     // Robot Kinematics
 
     // Odmometric Constraints
-    public final static double L = 11;  // separation between left and right Encoder.
-    public final static double lateralOffset = -6.7;  // offset between origin of robot and lateral Encoder.
+    public final static double L = 10.89;  // separation between left and right Encoder.
+    public final static double lateralOffset = -6.65;  // offset between origin of robot and lateral Encoder.
     public final static double R = 0.688975;  // Encoder wheel radius.
     public final static double encoderTicksPerRev = 8192;  // Ticks read per revolution of REV Encoder.
     public final static double inchPerTick = 2.0 * Math.PI * R / encoderTicksPerRev;  // Inches traveled per tick moved.
@@ -108,6 +109,8 @@ public class Robot extends OpMode {
 
         stopDrive();
         resetDriveEncoders();
+
+        Time.reset();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
