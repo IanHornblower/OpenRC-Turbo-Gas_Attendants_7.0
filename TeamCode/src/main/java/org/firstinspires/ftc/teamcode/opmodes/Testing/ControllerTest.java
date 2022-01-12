@@ -25,7 +25,8 @@ public class ControllerTest extends LinearOpMode {
     public double time = 0;
     public double cycleLength = 0;
     public static double timeRunning = 0;
-    public static int BuildNumber = 235632752;
+    public static String BuildNumber = "2.4.7";
+    public static String BuildComment = "Updated Blinkin Timer";
     public static String HubName = "Expansion Hub 1";
     public static boolean ImperialUnits = false;
     public static String timeUnit = "HOURS";

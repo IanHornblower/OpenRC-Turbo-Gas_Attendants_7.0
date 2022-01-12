@@ -51,11 +51,6 @@ public class Controller {
         touchingBottomRight = touchingBottom && touchingRight;
 
         Log.i("Controller.update()", "Controller Updated");
-        Log.i("Controller.update()", Boolean.toString(a));
-        Log.i("Controller.update()", Boolean.toString(b));
-        Log.i("Controller.update()", Float.toString(left_stick_x));
-        Log.i("Controller.update()", Float.toString(left_stick_y));
-
 
         if(gamepad.touchpad_finger_1 && ttime > 250) {
             loc3 = new Float[]{loc2[0], loc2[1]};
