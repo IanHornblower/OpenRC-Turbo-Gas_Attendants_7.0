@@ -13,7 +13,7 @@ public class Function {
         this.x = x;
     }
 
-    public void execute() {
+    public void execute() throws InterruptedException {
         x.method();
     }
 
