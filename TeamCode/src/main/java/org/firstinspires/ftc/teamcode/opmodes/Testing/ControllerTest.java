@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.util.Color;
 @TeleOp(name="Controller Test", group="Testing")
 public class ControllerTest extends LinearOpMode {
 
-
     public static boolean DashTelemetryEnabled = true;
 <<<<<<< HEAD
     public long time = 0;
@@ -33,6 +32,7 @@ public class ControllerTest extends LinearOpMode {
     public double cycleLength = 0;
     public static double timeRunning = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static int BuildNumber = 235632752;
 >>>>>>> 214e7f6 (balls)
 =======
@@ -40,6 +40,11 @@ public class ControllerTest extends LinearOpMode {
     public static String BuildComment = "Updated Blinkin Timer";
 >>>>>>> c7e8e04 (bbw pt2)
     public static String HubName = "Expansion Hub 1";
+=======
+    public static String BuildNumber = "2.5.2";
+    public static String BuildComment = "Updated Blinkin Timer for the 24th time";
+    public static String HubName = "Control Hub";
+>>>>>>> 8e5fea5 (bread 2.0)
     public static boolean ImperialUnits = false;
     public static String timeUnit = "HOURS";
     public static boolean pain = false;
@@ -51,20 +56,38 @@ public class ControllerTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         telemetry.clear();
 =======
         if(pain) throw new OutOfMemoryError("feed me daddy");
 >>>>>>> 214e7f6 (balls)
+=======
+>>>>>>> 8e5fea5 (bread 2.0)
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
         expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
         Driver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         Blinkin.Driver = Driver;
         Battery.expansionHub = expansionHub;
+<<<<<<< HEAD
 
 
         telemetry.addLine("Controller Test");
         telemetry.addData("Version", BuildNumber);
+=======
+        Log.i("GP-A", Float.toString(gamepad1.left_stick_x));
+        Gamepad gp1 = gamepad1;
+        Gamepad gp2 = gamepad2;
+        Controller gamepad1 = new Controller(gp1);
+        Controller gamepad2 = new Controller(gp2);
+        telemetry.addLine("Controller Test");
+        telemetry.addData("Version", BuildNumber);
+        telemetry.addData("Ver Com", BuildComment);
+        if (gamepad1.type() != Gamepad.Type.SONY_PS4 && gamepad1.id != ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't a PS4 Controller!");
+        if (gamepad2.type() != Gamepad.Type.SONY_PS4 && gamepad2.id != ID_UNASSOCIATED) telemetry.addLine("Controller 2 isn't a PS4 Controller!");
+        if (gamepad1.id == ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't Connected!");
+        if (gamepad2.id == ID_UNASSOCIATED) telemetry.addLine("Controller 2 isn't Connected!");
+>>>>>>> 8e5fea5 (bread 2.0)
         telemetry.addLine("Ready");
         telemetry.update();
 
@@ -83,7 +106,11 @@ public class ControllerTest extends LinearOpMode {
             time = System.currentTimeMillis();
             timeRunning = timeRunning + cycleLength;
 
+<<<<<<< HEAD
             gamepad1.update();
+=======
+            if(pain) throw new OutOfMemoryError("\uD80C\uDD89");
+>>>>>>> 8e5fea5 (bread 2.0)
 
             telemetry.clear();
 
