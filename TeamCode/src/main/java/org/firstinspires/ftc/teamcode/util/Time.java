@@ -11,6 +11,14 @@ public class Time {
     static double timeSinceStart = 0;
     static double deltaTime = 0;
 
+    public Time() {
+        startTime = 0;
+        currentTime = 0;
+        previousTime = 0;
+        timeSinceStart = 0;
+        deltaTime = 0;
+    }
+
     public static void reset() {
         Init.reset();
         startTime = 0;
