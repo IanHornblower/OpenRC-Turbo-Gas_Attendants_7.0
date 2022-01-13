@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.Comp;
 
+import static org.firstinspires.ftc.teamcode.hardware.lift.LIFT.*;
 import static org.firstinspires.ftc.teamcode.util.Time.timeout;
+import static org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera.position.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,6 +13,7 @@ import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.control.CornettCore;
 import org.firstinspires.ftc.teamcode.control.Trajectory;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.lift;
 import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
@@ -22,6 +25,8 @@ public class Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        lift.LIFT pos = D1;
+
         Robot robot = new Robot(hardwareMap);
         CornettCore motionProfile = new CornettCore(robot);
         FreightFrenzyCamera camera = new FreightFrenzyCamera(hardwareMap);
@@ -50,6 +55,17 @@ public class Auto extends LinearOpMode {
         telemetry.clear();
         telemetry.update();
 
+        switch (camera.determinePosition()) {
+            case A:
+                pos = D1;
+            case B:
+                pos = D2;
+            case C:
+                pos = D3;
+            default:
+                pos = D1;
+        }
+
         while(opModeIsActive()) {
 
         switch(MatchConfig.side) {
@@ -66,7 +82,15 @@ public class Auto extends LinearOpMode {
                          * Run Auto
                          */
 
+                        robot.lift.prime(pos);
+
                         motionProfile.runToPositionSync(36, 5, Math.toRadians(45), 1);
+
+                        robot.lift.drop();
+
+                        sleep(200);
+
+                        robot.lift.retract();
 
                         Trajectory toWarehouse = new Trajectory(robot, new Pose2D(36, 5, Math.toRadians(45)));
 
@@ -88,9 +112,16 @@ public class Auto extends LinearOpMode {
                          * Run Auto
                          */
 
+                        robot.lift.prime(pos);
+
                         motionProfile.runToPositionSync(39, -29, Math.toRadians(315),1);
                         robot.DriveTrain.stopDrive();
-                        sleep(2000);
+
+                        robot.lift.drop();
+
+                        sleep(200);
+
+                        robot.lift.retract();
 
                         motionProfile.runToPositionSync(50, -62, Math.toRadians(0), 1);
                         robot.DriveTrain.stopDrive();

@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import static org.firstinspires.ftc.teamcode.util.Time.timeout;
+
+import android.util.Log;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -12,6 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
+import org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera;
 
 import java.nio.charset.MalformedInputException;
 
@@ -100,6 +105,75 @@ public class lift {
             case PRIMED:
                 boxServo.setPosition(servoStart);
                 setPosition(liftStart);
+        }
+    }
+
+    public void prime(LIFT state) {
+        Thread t1 = new Thread(()-> {
+            switch(state) {
+                case D1:
+                    setOne();
+                    boxServo.setPosition(servoPrimed);
+                    break;
+
+                case D2:
+                    setTwo();
+                    boxServo.setPosition(servoPrimed);
+                    break;
+
+                case D3:
+                    setThree();
+                    boxServo.setPosition(servoPrimed);
+                    break;
+            }
+        });
+    }
+
+    public void setOne() {
+        while(Math.abs(lift.getCurrentPosition() - liftOne) > threshold) {
+            setPosition(liftOne);
+        }
+        lift.setPower(0);
+    }
+
+    public void setTwo() {
+        while(Math.abs(lift.getCurrentPosition() - liftTwo) > threshold) {
+            setPosition(liftTwo);
+        }
+        lift.setPower(0);
+    }
+
+    public void setThree() {
+        while(Math.abs(lift.getCurrentPosition() - liftThree) > threshold) {
+            setPosition(liftThree);
+        }
+        lift.setPower(0);
+    }
+
+    public void setStart() {
+        while(Math.abs(lift.getCurrentPosition() - liftStart) > threshold) {
+            setPosition(liftStart);
+        }
+        lift.setPower(0);
+    }
+
+    public void doAuto(FreightFrenzyCamera.position location) throws InterruptedException {
+        switch (location) {
+            case A:
+                setOne();
+                boxServo.setPosition(servoDropped);
+                setStart();
+                break;
+            case B:
+                setTwo();
+                boxServo.setPosition(servoDropped);
+                setStart();
+                break;
+            case C:
+                setThree();
+                boxServo.setPosition(servoDropped);
+                setStart();
+                break;
         }
     }
 }
