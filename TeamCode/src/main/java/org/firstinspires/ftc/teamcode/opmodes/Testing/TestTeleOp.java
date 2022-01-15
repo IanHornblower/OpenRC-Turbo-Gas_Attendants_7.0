@@ -3,12 +3,14 @@ package org.firstinspires.ftc.teamcode.opmodes.Testing;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.lift;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.Controller;
@@ -22,7 +24,7 @@ public class TestTeleOp extends LinearOpMode {
 
     public static double position = 0;
 
-    public static double p = 0.01, i = 0, d = 0;
+    public static double p = 0.0, i = 0, d = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -77,10 +79,27 @@ public class TestTeleOp extends LinearOpMode {
 
              */
 
-            robot.lift.setLiftPID(new MiniPID(p, i, d));
-            robot.lift.setPosition(position);
 
-            telemetry.addData("Lift ENC", -robot.getLift().getCurrentPosition());
+
+           robot.lift.setLiftPID(new MiniPID(p, i, d));
+           robot.lift.setPosition(position);
+
+           telemetry.addData("State", robot.getLift().getCurrentPosition());
+           telemetry.addData("Refrence", position);
+           telemetry.addData("Error", position - robot.getLift().getCurrentPosition());
+
+
+            if(gamepad1.square) {
+                robot.lift.drop();
+            }
+
+            if(gamepad1.triangle) {
+                robot.lift.primeServo();
+            }
+            if(gamepad1.circle) {
+                robot.lift.startServo();
+            }
+
 
             //telemetry.addData("\nXYH", robot.pos.toString());
             //telemetry.addData("Left", robot.getLeftEncoder().getCurrentPosition());
