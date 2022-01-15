@@ -21,12 +21,19 @@ import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.Controller;
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
+import static org.firstinspires.ftc.teamcode.hardware.lift.*;
 
 import org.firstinspires.ftc.teamcode.util.MathUtil;
+import org.firstinspires.ftc.teamcode.util.MiniPID;
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Comp")
 public class TeleOperation extends LinearOpMode {
+
+    public static double p = 0.03, i = 3, d = 5;
+    public static double position = liftStart;
+    boolean down = true;
+    boolean isMoving = false;
 
     private enum DRIVE {
         FIELD,
@@ -34,6 +41,7 @@ public class TeleOperation extends LinearOpMode {
     }
 
     public static enum LIFTSTATE {
+        START,
         ONE,
         TWO,
         THREE;
@@ -44,6 +52,8 @@ public class TeleOperation extends LinearOpMode {
         PRIME,
 
     }
+
+    LIFTSTATE liftPos = LIFTSTATE.START;
 
     DRIVE driveState = DRIVE.FIELD;
 
@@ -59,14 +69,16 @@ public class TeleOperation extends LinearOpMode {
         switch (MatchConfig.side) {
             case RED:
                 robot.getDuck().setDirection(DcMotorSimple.Direction.REVERSE);
-                modTheta -= Math.PI;
+                modTheta = -Math.PI/2+modTheta;
                 break;
             case BLUE:
                 robot.getDuck().setDirection(DcMotorSimple.Direction.FORWARD);
-                modTheta += Math.PI;
+                modTheta = Math.PI/2+modTheta;
         }
 
         waitForStart();
+
+        robot.lift.startServo();
 
         while(opModeIsActive()) {
             Thread t1 = new Thread(() -> {
@@ -108,6 +120,8 @@ public class TeleOperation extends LinearOpMode {
                 if(gamepad1.triangle) driveState = DRIVE.FIELD;
             }
 
+            isMoving = leftX > 0.1 || leftY > 0.1;
+
             // Duck Motor
             robot.spinMotor.run(gamepad2.left_bumper, gamepad2.right_bumper);
 
@@ -123,30 +137,50 @@ public class TeleOperation extends LinearOpMode {
 
             // Lift
 
-            if(gamepad2.square) {
-                switch (lift[0]) {
-                    case ONE:
+            robot.lift.setPosition(position);
 
-                    case TWO:
-                        System.out.println(lift[0].toString());
-                    case THREE:
-                        System.out.println(lift[0].toString());
+            if(gamepad2.square && !isMoving) {
+                down = false;
+                if (lift[0] == LIFTSTATE.ONE) {
+                    position = liftOne;
+                    robot.lift.primeServo();
+                } else if (lift[0] == LIFTSTATE.TWO) {
+                    position = liftTwo;
+                    robot.lift.primeServo();
+                } else if (lift[0] == LIFTSTATE.THREE) {
+                    position = liftThree;
+                    robot.lift.primeServo();
                 }
             }
 
-            if(gamepad2.dpad_up) {
-                robot.lift.prime();
+            if(gamepad2.dpad_down) {
+                robot.lift.setLiftPID(new MiniPID(0.003, i, d));
             }
-            else if(gamepad2.dpad_down) {
-                robot.lift.retract();
-            }
+            else robot.lift.setLiftPID(new MiniPID(p, i, d));
 
-            if(gamepad2.cross) {
+            if(gamepad2.circle && !down && !isMoving) {
                 robot.lift.drop();
             }
 
+            if(gamepad2.triangle && !isMoving) {
+                position = liftThree;
+                robot.lift.primeServo();
+            }
+
+            if(gamepad2.cross) {
+                down = true;
+                robot.lift.startServo();
+                position = liftStart;
+            }
+
+            //telemetry.addData("End Auto Pos", PoseStorage.autoEnd.toString());
+            //telemetry.addData("Current Pos", robot.pos.toString());
+            //telemetry.addData("IMU ANGLE", robot.IMU.getIMUHeading() + "DEGREES: " + Math.toDegrees(robot.IMU.getIMUHeading()));
+            //telemetry.addData("Robot ANGLE", robot.pos.heading + "DEGREES: " + Math.toDegrees(robot.pos.heading));
+
             telemetry.addData("Lift Level", lift[0].toString());
             telemetry.addData("Drive State", driveState.toString());
+            telemetry.addData("Side", MatchConfig.side.toString());
             telemetry.update();
         }
     }

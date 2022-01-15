@@ -28,19 +28,19 @@ public class lift {
     MiniPID liftPID;
     Robot robot;
 
-    public static double P = 0.0, I = 0, D = 0;
+    public static double P = 0.03, I = 5, D = 3;
 
     public static double threshold = 10;
 
-    public static double liftStart = 0;
-    public static double liftPrimed = 100;
-    public static double liftOne = 0;
-    public static double liftTwo = 0;
-    public static double liftThree = 0;
+    public static double liftStart = 20;
+    public static double liftPrimed = 270;
+    public static double liftOne = 170;
+    public static double liftTwo = 230;
+    public static double liftThree = 270;
 
-    public static double servoStart = 0;
-    public static double servoPrimed = 0;
-    public static double servoDropped = 0;
+    public static double servoStart = 0.81;
+    public static double servoPrimed = 0.72;
+    public static double servoDropped = 0.3;
 
     public enum LIFT {
         START,
@@ -75,12 +75,20 @@ public class lift {
     public void drop() {
         boxServo.setPosition(servoDropped);
     }
+
+    public void primeServo() {
+        boxServo.setPosition(servoPrimed);
+    }
+
+    public void startServo() {
+        boxServo.setPosition(servoStart);
+    }
     
     public void setPosition(double position) {
         //if(Math.abs(robot.getLift().getCurrentPosition() - position) < threshold) {
             liftPID.setSetpoint(position);
-            liftPID.setError(position - -robot.getLift().getCurrentPosition());
-            robot.getLift().setPower(liftPID.getOutput());
+            liftPID.setError(position - robot.getLift().getCurrentPosition());
+            robot.getLift().setPower(-liftPID.getOutput());
         //}
         //else robot.getLift().setPower(0);
     }
@@ -103,6 +111,9 @@ public class lift {
             case START:
                 break;
             case PRIMED:
+                boxServo.setPosition(servoStart);
+                setPosition(liftStart);
+            default:
                 boxServo.setPosition(servoStart);
                 setPosition(liftStart);
         }
@@ -130,31 +141,27 @@ public class lift {
     }
 
     public void setOne() {
-        while(Math.abs(lift.getCurrentPosition() - liftOne) > threshold) {
+        //while(Math.abs(lift.getCurrentPosition() - liftOne) > threshold) {
             setPosition(liftOne);
-        }
-        lift.setPower(0);
+        //}
     }
 
     public void setTwo() {
-        while(Math.abs(lift.getCurrentPosition() - liftTwo) > threshold) {
+        //while(Math.abs(lift.getCurrentPosition() - liftTwo) > threshold) {
             setPosition(liftTwo);
-        }
-        lift.setPower(0);
+        //}
     }
 
     public void setThree() {
-        while(Math.abs(lift.getCurrentPosition() - liftThree) > threshold) {
+        //while(Math.abs(lift.getCurrentPosition() - liftThree) > threshold) {
             setPosition(liftThree);
-        }
-        lift.setPower(0);
+        //}
     }
 
     public void setStart() {
-        while(Math.abs(lift.getCurrentPosition() - liftStart) > threshold) {
+        //while(Math.abs(lift.getCurrentPosition() - liftStart) > threshold) {
             setPosition(liftStart);
-        }
-        lift.setPower(0);
+        //}
     }
 
     public void doAuto(FreightFrenzyCamera.position location) throws InterruptedException {
