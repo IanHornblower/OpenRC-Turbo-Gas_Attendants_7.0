@@ -30,10 +30,11 @@ import org.firstinspires.ftc.teamcode.util.MiniPID;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Comp")
 public class TeleOperation extends LinearOpMode {
 
-    public static double p = 0.03, i = 3, d = 5;
+    public static double p = 0.007, i = 0, d = 5;
     public static double position = liftStart;
     boolean down = true;
     boolean isMoving = false;
+    boolean intakeDown = true;
 
     private enum DRIVE {
         FIELD,
@@ -127,19 +128,25 @@ public class TeleOperation extends LinearOpMode {
 
             // Intake
 
-            if(gamepad1.dpad_down) robot.intakeSys.regularFreightIntake();
+            if(gamepad2.dpad_down)  {
+                intakeDown = true;
+                robot.intakeSys.regularFreightIntake();
+            }
 
-            if(gamepad1.dpad_up) robot.intakeSys.raiseIntake();
+            if(gamepad2.dpad_up) {
+                intakeDown = false;
+                robot.intakeSys.raiseIntake();
+            }
 
             if(gamepad1.dpad_left || gamepad1.dpad_right) robot.intakeSys.inAirIntake();
 
-            robot.intakeSys.run(gamepad2.left_trigger > 0.1, gamepad2.right_trigger > 0.1);
+            robot.intakeSys.run(gamepad2.left_trigger, gamepad2.right_trigger, down);
 
             // Lift
 
             robot.lift.setPosition(position);
 
-            if(gamepad2.square && !isMoving) {
+            if(gamepad2.square && !isMoving && intakeDown) {
                 down = false;
                 if (lift[0] == LIFTSTATE.ONE) {
                     position = liftOne;
@@ -158,16 +165,22 @@ public class TeleOperation extends LinearOpMode {
             }
             else robot.lift.setLiftPID(new MiniPID(p, i, d));
 
+            if(gamepad2.dpad_down) {
+                robot.lift.setLiftPID(new MiniPID(0.003, i, d));
+            }
+            else robot.lift.setLiftPID(new MiniPID(p, i, d));
+
             if(gamepad2.circle && !down && !isMoving) {
                 robot.lift.drop();
             }
 
-            if(gamepad2.triangle && !isMoving) {
+            if(gamepad2.triangle && !isMoving && intakeDown) {
+                down = false;
                 position = liftThree;
                 robot.lift.primeServo();
             }
 
-            if(gamepad2.cross) {
+            if(gamepad2.cross && intakeDown) {
                 down = true;
                 robot.lift.startServo();
                 position = liftStart;

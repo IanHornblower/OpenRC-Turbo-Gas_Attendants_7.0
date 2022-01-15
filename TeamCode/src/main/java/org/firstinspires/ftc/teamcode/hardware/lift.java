@@ -28,19 +28,20 @@ public class lift {
     MiniPID liftPID;
     Robot robot;
 
-    public static double P = 0.03, I = 5, D = 3;
+    public static double P = 0.007, I = 0, D = 3;
 
     public static double threshold = 10;
 
-    public static double liftStart = 20;
-    public static double liftPrimed = 270;
-    public static double liftOne = 170;
-    public static double liftTwo = 230;
-    public static double liftThree = 270;
+    public static double liftStart = -10;
+    public static double liftPrimed = 1080;
+    public static double liftOne = 500;
+    public static double liftTwo = 850;
+    public static double liftThree = 1080;
 
-    public static double servoStart = 0.81;
+    public static double servoStart = 0.77;
     public static double servoPrimed = 0.72;
     public static double servoDropped = 0.3;
+    public static double servoSemiDrop = 0.43;
 
     public enum LIFT {
         START,
@@ -78,6 +79,10 @@ public class lift {
 
     public void primeServo() {
         boxServo.setPosition(servoPrimed);
+    }
+
+    public void lowerServo() {
+        boxServo.setPosition(servoSemiDrop);
     }
 
     public void startServo() {
