@@ -17,14 +17,29 @@ import org.firstinspires.ftc.teamcode.util.Controller;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
+import static org.firstinspires.ftc.teamcode.util.Time.await;
 
 @Config
 @TeleOp(name = "Testing OpMode", group = "Testing")
 public class TestTeleOp extends LinearOpMode {
-
     public static double position = 0;
 
-    public static double p = 0.0, i = 0, d = 0;
+    public static double p = 0.007, i = 0, d = 5;
+
+    public void lowerDrop() {
+        Thread t1 = new Thread(()-> {
+            Robot robot = new Robot(hardwareMap);
+            robot.lift.drop();
+            try {
+                await(200, ()-> {
+                    robot.lift.lowerServo();
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -98,6 +113,10 @@ public class TestTeleOp extends LinearOpMode {
             }
             if(gamepad1.circle) {
                 robot.lift.startServo();
+            }
+
+            if(gamepad1.cross) {
+
             }
 
 
