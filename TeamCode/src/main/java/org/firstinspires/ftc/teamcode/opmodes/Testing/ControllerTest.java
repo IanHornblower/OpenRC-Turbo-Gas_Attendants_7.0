@@ -20,14 +20,13 @@ import static com.qualcomm.robotcore.hardware.Gamepad.ID_UNASSOCIATED;
 @TeleOp(name="Controller Test", group="Testing")
 public class ControllerTest extends LinearOpMode {
 
-
     public static boolean DashTelemetryEnabled = true;
     public double time = 0;
     public double cycleLength = 0;
     public static double timeRunning = 0;
-    public static String BuildNumber = "2.4.7";
-    public static String BuildComment = "Updated Blinkin Timer";
-    public static String HubName = "Expansion Hub 1";
+    public static String BuildNumber = "2.5.2";
+    public static String BuildComment = "Updated Blinkin Timer for the 24th time";
+    public static String HubName = "Control Hub";
     public static boolean ImperialUnits = false;
     public static String timeUnit = "HOURS";
     public static boolean pain = false;
@@ -38,7 +37,6 @@ public class ControllerTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        if(pain) throw new OutOfMemoryError("feed me daddy");
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
         telemetry.clear();
@@ -50,8 +48,10 @@ public class ControllerTest extends LinearOpMode {
         Gamepad gp1 = gamepad1;
         Gamepad gp2 = gamepad2;
         Controller gamepad1 = new Controller(gp1);
+        Controller gamepad2 = new Controller(gp2);
         telemetry.addLine("Controller Test");
         telemetry.addData("Version", BuildNumber);
+        telemetry.addData("Ver Com", BuildComment);
         if (gamepad1.type() != Gamepad.Type.SONY_PS4 && gamepad1.id != ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't a PS4 Controller!");
         if (gamepad2.type() != Gamepad.Type.SONY_PS4 && gamepad2.id != ID_UNASSOCIATED) telemetry.addLine("Controller 2 isn't a PS4 Controller!");
         if (gamepad1.id == ID_UNASSOCIATED) telemetry.addLine("Controller 1 isn't Connected!");
@@ -73,6 +73,8 @@ public class ControllerTest extends LinearOpMode {
             cycleLength = System.currentTimeMillis() - time;
             time = System.currentTimeMillis();
             timeRunning = timeRunning + cycleLength;
+
+            if(pain) throw new OutOfMemoryError("\uD80C\uDD89");
 
             telemetry.clear();
 

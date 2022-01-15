@@ -4,14 +4,17 @@ package org.firstinspires.ftc.teamcode.hardware;
 import android.util.Log;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver.BlinkinPattern;
+import org.firstinspires.ftc.teamcode.util.Time;
+
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.firstinspires.ftc.teamcode.util.Init.init;
+import static org.firstinspires.ftc.teamcode.util.Time.await;
+import static org.firstinspires.ftc.teamcode.util.Time.timeout;
 
 public class Blinkin {
 
     public static RevBlinkinLedDriver Driver = null;
-
-    private static long nt_old;
-    private static long nt_del;
-    private static long nt_now;
 
     public static void setColor(String cname) {
 
@@ -39,10 +42,10 @@ public class Blinkin {
      * The 'auto' boolean is optional, just set true for auto
      * @param currentTime time in lmao
      */
-    public static synchronized void updateLightTimer(int currentTime) {
+    public static synchronized void updateLightTimer(int currentTime) throws InterruptedException {
         updateLightTimer(currentTime, false);
     }
-    public static synchronized void updateLightTimer(int currentTime, boolean auto) {
+    public static synchronized void updateLightTimer(int currentTime, boolean auto) throws InterruptedException {
         int matchLength = auto ? 30 : 150;
         currentTime = matchLength-(currentTime/1000);
         Log.i("Blinkin.updateLightTimer()", "Count Down : "+currentTime);
@@ -81,25 +84,26 @@ public class Blinkin {
      * @param P2 Blinkin Pattern 2
      * @param duration Time of each flash in ms
      */
-    private static void Flash(BlinkinPattern P1, BlinkinPattern P2, int duration) {
-        long total = 0;
-        nt_old = System.nanoTime();
-        boolean flip = false;
-        while(total < 1000) {
-            Log.i("Blinkin.Flash()", String.valueOf(total));
-            Log.i("Blinkin.Flash()", String.valueOf(nt_del % duration));
-            if (nt_del % duration != 0) {
-                nt_now = System.nanoTime();
-                nt_del = nt_now - nt_old;
-            } else {
-                Driver.setPattern(flip ? P1 : P2);
-                flip = !flip;
-            }
-            nt_old = System.nanoTime();
-            total = total + nt_del;
+    private static void Flash(BlinkinPattern P1, BlinkinPattern P2, int duration) throws InterruptedException {
+        //AtomicReference<Integer> newD = new AtomicReference<>(duration);
+        init(() -> {
+            //newD.set((1000 % (duration * 2)) / 2);
+            Log.i("Blinkin.Flash()", String.valueOf(duration));
+        });
+
+        for (int i = 0; (1000 / (duration * 2)) < i; i++) {
+            await(duration, () -> {
+                Driver.setPattern(P1);
+                Log.i("Blinkin.Flash()", "Flashed P1");
+            });
+            Time.reset();
+            await(duration, () -> {
+                Driver.setPattern(P2);
+                Log.i("Blinkin.Flash()", "Flashed P2");
+            });
+            Time.reset();
         }
     }
-
 
 
 }
