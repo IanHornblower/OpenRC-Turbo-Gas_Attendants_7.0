@@ -33,6 +33,7 @@ public class ControllerTest extends LinearOpMode {
     public static double timeRunning = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     public static int BuildNumber = 235632752;
 >>>>>>> 214e7f6 (balls)
 =======
@@ -42,6 +43,9 @@ public class ControllerTest extends LinearOpMode {
     public static String HubName = "Expansion Hub 1";
 =======
     public static String BuildNumber = "2.5.2";
+=======
+    public static String BuildNumber = "2.5.3";
+>>>>>>> 1875a3d (Had to manually add some files because git was being weird)
     public static String BuildComment = "Updated Blinkin Timer for the 24th time";
     public static String HubName = "Control Hub";
 >>>>>>> 8e5fea5 (bread 2.0)
@@ -93,6 +97,9 @@ public class ControllerTest extends LinearOpMode {
 
 
         waitForStart();
+
+
+
 
         telemetry.clear();
         time = System.currentTimeMillis();

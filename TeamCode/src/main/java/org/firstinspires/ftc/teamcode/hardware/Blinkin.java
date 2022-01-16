@@ -93,7 +93,7 @@ public class Blinkin {
             Log.i("Blinkin.Flash()", String.valueOf(duration));
         });
 
-        for (int i = 0; (1000 / (duration * 2)) < i; i++) {
+        for (int i = 0; (1000 / (duration * 2)) > i; i++) {
             await(duration, () -> {
                 Driver.setPattern(P1);
                 Log.i("Blinkin.Flash()", "Flashed P1");
@@ -106,6 +106,5 @@ public class Blinkin {
             Time.reset();
         }
     }
-
 
 }
