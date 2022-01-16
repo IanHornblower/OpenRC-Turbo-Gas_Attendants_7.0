@@ -6,13 +6,29 @@ import java.util.Objects;
 
 public class Battery {
 
-    public static ExpansionHubEx expansionHub;
+    public static ExpansionHubEx expansionHub1;
+    public static ExpansionHubEx expansionHub2;
     public static int BatteryCapacity = 3000;
+
+    /**
+     * Passes the hubs to the Battery Class
+     * @param eh1
+     *  Hub 1
+     * @param eh2
+     *  Hub 2, if present
+     */
+    public static synchronized void init(ExpansionHubEx eh1, ExpansionHubEx eh2) {
+        expansionHub1 = eh1;
+        expansionHub2 = eh2;
+    }
+    public static synchronized void init(ExpansionHubEx eh1) {
+        expansionHub1 = eh1;
+    }
 
     public static int percentage() {
         int result = 0;
-        double v = Math.round(voltage()/10)/100;
-        result = (int)(v-10)*20;
+        double v = Math.round(voltage()/1000);
+        result = (int)Math.round((v-10)*25);
         if(result < 0)
             result = 0;
         return Math.round(result);
@@ -32,14 +48,23 @@ public class Battery {
         return (int)Math.round(ret);
     }
 
-    public static double currentDraw() {
-        if (expansionHub == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
-        return expansionHub.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS);
+    public static float currentDraw() {
+        if (expansionHub1 == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
+        float v1 = Math.round(expansionHub1.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
+        float v2 = (expansionHub2 == null) ?
+                Math.round(expansionHub2.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS)) :
+                Math.round(expansionHub1.getTotalModuleCurrentDraw(ExpansionHubEx.CurrentDrawUnits.MILLIAMPS));
+
+        return (v1+v2)/2;
     }
 
-    public static double voltage() {
-        if (expansionHub == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
-        return Math.round(expansionHub.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS));
+    public static float voltage() {
+        if (expansionHub1 == null) throw new NullPointerException("Battery.expansionHub is Not Defined");
+        float v1 = Math.round(expansionHub1.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS));
+        float v2 = (expansionHub2 == null) ?
+                Math.round(expansionHub2.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS)) :
+                Math.round(expansionHub1.read12vMonitor(ExpansionHubEx.VoltageUnits.MILLIVOLTS));
+        return (v1+v2)/2;
     }
 
 

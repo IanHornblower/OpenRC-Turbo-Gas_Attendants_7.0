@@ -24,7 +24,7 @@ public class ControllerTest extends LinearOpMode {
     public double time = 0;
     public double cycleLength = 0;
     public static double timeRunning = 0;
-    public static String BuildNumber = "2.5.2";
+    public static String BuildNumber = "2.5.3";
     public static String BuildComment = "Updated Blinkin Timer for the 24th time";
     public static String HubName = "Control Hub";
     public static boolean ImperialUnits = false;
@@ -61,6 +61,9 @@ public class ControllerTest extends LinearOpMode {
 
 
         waitForStart();
+
+
+
 
         telemetry.clear();
         time = System.currentTimeMillis();

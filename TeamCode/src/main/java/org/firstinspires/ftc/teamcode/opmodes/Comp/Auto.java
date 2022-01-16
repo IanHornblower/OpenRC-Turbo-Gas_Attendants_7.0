@@ -145,6 +145,41 @@ public class Auto extends LinearOpMode {
                     case WAREHOUSE:
                         break;
                     case STORAGE:
+                        /*
+                         * Init
+                         */
+
+                        robot.setSTART_POSITION(new Pose2D(63, -36, AngleUtil.interpretAngle(0)));
+
+                        /*
+                         * Run Auto
+                         */
+
+                        robot.lift.prime(pos);
+
+                        motionProfile.runToPositionSync(39, -29, Math.toRadians(315),1);
+                        robot.DriveTrain.stopDrive();
+
+                        robot.lift.drop();
+
+                        sleep(200);
+
+                        robot.lift.retract();
+
+                        motionProfile.runToPositionSync(50, -62, Math.toRadians(0), 1);
+                        robot.DriveTrain.stopDrive();
+
+                        robot.DriveTrain.setMotorPowers(-0.2, -0.3);
+                        sleep(400);
+                        robot.DriveTrain.stopDrive();
+
+                        sleep(500);
+                        robot.getDuck().setPower(-0.5);
+                        sleep(3000);
+                        robot.getDuck().setPower(0.0);
+
+                        motionProfile.runToPositionSync(34, -59, Math.toRadians(0), 1);
+                        robot.DriveTrain.stopDrive();
                         break;
                 }
                 break;
