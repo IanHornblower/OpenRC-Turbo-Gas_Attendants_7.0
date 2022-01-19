@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.control;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.math.Curve;
 import org.firstinspires.ftc.teamcode.math.Point;
@@ -15,7 +18,9 @@ public class CornettCore extends OpMode {
 
     private Robot robot;
 
-    public enum DIRECTION {FORWARD, BACKWARD};
+    public enum DIRECTION {FORWARD, BACKWARD}
+
+    Coefficients PIDEx = new Coefficients();
 
     MiniPID defaultTurnPID = new MiniPID(0.5, 0, 0);
 
@@ -59,6 +64,7 @@ public class CornettCore extends OpMode {
 
     public void tuneTrackWidthIMU (double heading, double direction) {
         robot.updateAccumulatedHeading();
+        /*
         MiniPID turnPID = defaultTurnPID;
 
         turnPID.setSetpoint(heading);
@@ -69,10 +75,17 @@ public class CornettCore extends OpMode {
         turnPIDOutput = turnPID.getOutput(AngleUtil.deNormalizeAngle(robot.IMU.getAccumulatedHeadingInDegrees()));
         output = direction * turnPIDOutput * defaultTurnOutputMultiplier;
 
+         */
+
+        output = PIDEx.turn.calculate(heading, Math.toRadians(robot.IMU.getAccumulatedHeadingInDegrees()));
+
         robot.DriveTrain.setMotorPowers(0, 0, output);
     }
 
     public void rotateRaw(double heading, MiniPID turnPID, double outputMultiplier) {
+        /*
+        robot.updateOdometry();
+
         turnPID.setSetpoint(heading);
         turnPID.setOutputLimits(-1, 1);
 
@@ -81,6 +94,10 @@ public class CornettCore extends OpMode {
         direction = Curve.getDirection(robot.pos.getHeading(), heading);
         turnPIDOutput = turnPID.getOutput(AngleUtil.deNormalizeAngle(robot.pos.getHeading()));
         output = direction * turnPIDOutput * outputMultiplier;
+
+         */
+
+        output = PIDEx.turn.calculate(heading, robot.pos.getHeading());
 
         robot.DriveTrain.setMotorPowers(0, 0, output);
     }
@@ -107,6 +124,8 @@ public class CornettCore extends OpMode {
                                  MiniPID yPID, MiniPID headingPID,
                                  double xControlPointMultiplier, double yControlPointMultiplier, double headingControlPointMultiplier)
     {
+        /*
+
         xPID.setSetpoint(x);
         yPID.setSetpoint(y);
         headingPID.setSetpoint(heading);
@@ -123,12 +142,18 @@ public class CornettCore extends OpMode {
         yPIDOutput = yPID.getOutput(robot.pos.y);
         headingPIDOutput = headingPID.getOutput(AngleUtil.deNormalizeAngle(robot.pos.getHeading()));
 
+         */
+
         double theta = Curve.getAngle(robot.pos, new Point(x, y));
 
         direction = Curve.getDirection(robot.pos.getHeading(), heading);
 
-        double xRawPower = Math.cos(theta);
-        double yRawPower = Math.sin(theta);
+        double xRawPower = Math.cos(theta);  // Since This is augmenting the PID Output it may be beneficial to change this to something else.
+        double yRawPower = Math.sin(theta);  // Since This is augmenting the PID Output it may be beneficial to change this to something else.
+
+        xPIDOutput = Math.abs(PIDEx.x.calculate(x, robot.pos.x));
+        yPIDOutput = Math.abs(PIDEx.y.calculate(y, robot.pos.y));
+        headingPIDOutput = Math.abs(PIDEx.heading.calculate(heading, robot.pos.getHeading()));
 
         double xControlPoint = xRawPower * xPIDOutput * xControlPointMultiplier;
         double yControlPoint = yRawPower * yPIDOutput * yControlPointMultiplier;
@@ -171,9 +196,6 @@ public class CornettCore extends OpMode {
 
     public void setDifMotorForward(double targetX, double targetY) {
         robot.updateOdometry();
-
-        double Dp = 0.07;
-        double ACp = 2.3;
 
         double xError = targetX - robot.pos.x;
         double yError = targetY - robot.pos.y;

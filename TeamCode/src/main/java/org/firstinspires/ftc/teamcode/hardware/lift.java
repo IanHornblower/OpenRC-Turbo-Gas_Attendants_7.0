@@ -32,11 +32,11 @@ public class lift {
 
     public static double threshold = 10;
 
-    public static double liftStart = -10;
-    public static double liftPrimed = 1080;
+    public static double liftStart = 0;
+    public static double liftPrimed = 1000;
     public static double liftOne = 500;
     public static double liftTwo = 850;
-    public static double liftThree = 1080;
+    public static double liftThree = 1000;
 
     public static double servoStart = 0.77;
     public static double servoPrimed = 0.72;

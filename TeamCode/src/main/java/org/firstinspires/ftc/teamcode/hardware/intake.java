@@ -2,13 +2,15 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import androidx.annotation.CallSuper;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
-public class intake {
+public class intake extends OpMode {
 
     Robot robot;
     DcMotor intake;
@@ -43,12 +45,12 @@ public class intake {
         setIntakePower(0);
     }
 
-    public void run(boolean left, boolean right) {
-        if(left) {
-            intake.setPower(-ON);
+    public void run(double left, double right, boolean down) {
+        if(left > 0.1 && down) {
+            intake.setPower(left*0.67);
         }
-        else if (right) {
-            intake.setPower(ON);
+        else if (right > 0.1 && down) {
+            intake.setPower(-right*0.67);
         }
         else {
             intake.setPower(0);
@@ -66,5 +68,15 @@ public class intake {
 
     public void regularFreightIntake() {
         robot.getIntakeServo().setPosition(REGULAR_DOWN);
+    }
+
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public void loop() {
+
     }
 }

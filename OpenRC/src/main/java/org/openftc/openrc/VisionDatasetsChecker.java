@@ -24,6 +24,7 @@ package org.openftc.openrc;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.AnnotatedOpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
@@ -77,7 +78,7 @@ public class VisionDatasetsChecker
 
         if(!checkFiles())
         {
-            showError("Missing files!", "Some Vuforia / TensorFlow dataset files are missing from the FIRST/vision folder on the internal storage. Please check to make sure you copied them as per the setup instructions in the readme");
+            //showError("Missing files!", "Some Vuforia / TensorFlow dataset files are missing from the FIRST/vision folder on the internal storage. Please check to make sure you copied them as per the setup instructions in the readme");
         }
 
         alreadyCheckedThisSession = true;
@@ -125,6 +126,7 @@ public class VisionDatasetsChecker
         {
             if(!(new File(s).exists()))
             {
+                Log.e("MissingFilesError", s);
                 return false;
             }
         }
