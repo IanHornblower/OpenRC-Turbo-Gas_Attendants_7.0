@@ -22,10 +22,10 @@ public class spinMotor {
 
     public void run(boolean left, boolean right) {
         if(left) {
-            duck.setPower(-1.0);
+            duck.setPower(-0.5);
         }
         else if (right) {
-            duck.setPower(1);
+            duck.setPower(0.5);
         }
         else {
             duck.setPower(0);

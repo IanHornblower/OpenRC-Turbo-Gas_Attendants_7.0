@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.util.MiniPID;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Comp")
 public class TeleOperation extends LinearOpMode {
 
-    public static double p = 0.007, i = 0, d = 5;
+    public static double p = 0.007, i = 5, d = 5;
     public static double position = liftStart;
     boolean down = true;
     boolean isMoving = false;

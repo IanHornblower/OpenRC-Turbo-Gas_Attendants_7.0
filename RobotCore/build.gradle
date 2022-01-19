@@ -6,13 +6,11 @@ def versionNumbers = new Properties()
 file("versionNumbers.properties").withInputStream { versionNumbers.load(it) }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 28
-        versionCode 85
-        versionName "17.0"
+        targetSdkVersion 30
 
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
@@ -37,7 +35,6 @@ android {
 
     buildTypes {
         debug {
-            debuggable true
             jniDebuggable true
             renderscriptDebuggable true
             ndk {
