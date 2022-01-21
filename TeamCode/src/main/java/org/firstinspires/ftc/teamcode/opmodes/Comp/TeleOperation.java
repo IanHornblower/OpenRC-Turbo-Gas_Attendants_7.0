@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.PoseStorage;
+import org.firstinspires.ftc.teamcode.control.Coefficients;
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.hardware.intake;
@@ -22,15 +23,18 @@ import org.firstinspires.ftc.teamcode.util.Controller;
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 import static org.firstinspires.ftc.teamcode.hardware.lift.*;
+import static org.firstinspires.ftc.teamcode.hardware.lift.*;
 
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "Comp")
+@TeleOp(name = "TeleOp", group = "Comp")
 public class TeleOperation extends LinearOpMode {
 
-    public static double p = 0.007, i = 5, d = 5;
+    public static double movementSens = 1;
+    public static double turnSens = 1;
+
     public static double position = liftStart;
     boolean down = true;
     boolean isMoving = false;
@@ -161,14 +165,13 @@ public class TeleOperation extends LinearOpMode {
             }
 
             if(gamepad2.dpad_down) {
-                robot.lift.setLiftPID(new MiniPID(0.003, i, d));
+                Coefficients.liftKp = 0; // Other
+                Coefficients.liftStabilityThreshold = 0.5; // Speed
             }
-            else robot.lift.setLiftPID(new MiniPID(p, i, d));
-
-            if(gamepad2.dpad_down) {
-                robot.lift.setLiftPID(new MiniPID(0.003, i, d));
+            else {
+                Coefficients.liftKp = 0; // Defaults
+                Coefficients.liftStabilityThreshold = 0.8; // Defaults
             }
-            else robot.lift.setLiftPID(new MiniPID(p, i, d));
 
             if(gamepad2.circle && !down && !isMoving) {
                 robot.lift.drop();

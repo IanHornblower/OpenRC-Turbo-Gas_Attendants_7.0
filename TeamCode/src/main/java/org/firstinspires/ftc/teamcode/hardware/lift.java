@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.util.Time.timeout;
 
 import android.util.Log;
 
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.control.Coefficients;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 import org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera;
@@ -27,8 +29,6 @@ public class lift {
     Servo boxServo;
     MiniPID liftPID;
     Robot robot;
-
-    public static double P = 0.007, I = 0, D = 3;
 
     public static double threshold = 10;
 
@@ -64,7 +64,7 @@ public class lift {
         this.lift = robot.getLift();
         this.boxServo = robot.getBoxServo();
         this.robot = robot;
-        liftPID = new MiniPID(P, I, D);
+        //liftPID = new MiniPID(P, I, D);
         liftState = LIFT.START;
         servoState = SERVO.START;
     }
@@ -90,12 +90,9 @@ public class lift {
     }
     
     public void setPosition(double position) {
-        //if(Math.abs(robot.getLift().getCurrentPosition() - position) < threshold) {
-            liftPID.setSetpoint(position);
-            liftPID.setError(position - robot.getLift().getCurrentPosition());
-            robot.getLift().setPower(-liftPID.getOutput());
-        //}
-        //else robot.getLift().setPower(0);
+        double liftOutput = robot.PIDEx.lift.calculate(position, robot.getLift().getCurrentPosition());
+
+        robot.getLift().setPower(-liftOutput);
     }
 
     public void prime() {

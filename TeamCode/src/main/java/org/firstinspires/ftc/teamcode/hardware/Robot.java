@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.*;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.control.Coefficients;
 import org.firstinspires.ftc.teamcode.dashboard.Field;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
@@ -31,6 +32,11 @@ public class Robot extends OpMode {
 
     private BNO055IMU imu;
     private Orientation angles;
+
+    public Coefficients PIDEx;
+
+    public FreightDetector freightDetector;
+    public ColorRangeSensor freightSensor;
 
     private double previousHeading;
 
@@ -94,6 +100,10 @@ public class Robot extends OpMode {
 
         intakeServo = hardwareMap.servo.get("intakeServo");
 
+        PIDEx = new Coefficients();
+
+        freightSensor = hardwareMap.get(ColorRangeSensor.class, "color");
+
         duck = hardwareMap.dcMotor.get("duck");
         duck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         duck.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -127,6 +137,7 @@ public class Robot extends OpMode {
         lift = new lift(this);
         intakeSys = new intake(this);
         spinMotor = new spinMotor(this);
+        freightDetector = new FreightDetector(this);
         driveController = new Controller(gamepad1);
         operatorController = new Controller(gamepad2);
 
@@ -137,6 +148,9 @@ public class Robot extends OpMode {
         }
     }
 
+    public ColorRangeSensor getFreightSensor() {
+        return freightSensor;
+    }
     public HardwareMap getHardwareMap() {
         return hwMap;
     }

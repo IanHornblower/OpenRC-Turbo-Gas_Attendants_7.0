@@ -6,15 +6,12 @@ import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.PIDEx;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficients;
 import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.checkerframework.checker.units.qual.A;
 
 @Config
 public class Coefficients {
-
-    public Coefficients() {
-
-    }
 
     public static double turnKp = 0;
     public static double turnKi = 0;
@@ -81,4 +78,20 @@ public class Coefficients {
             differentialForwardMaxIntegralSum, differentialForwardStabilityThreshold, differentialForwardLowPassGain);
 
     public PIDEx differentialForward = new PIDEx(differentialForwardPID);
+
+    public static double liftKp = 0;
+    public static double liftKi = 0;
+    public static double liftKd = 0;
+    public static double liftMaxIntegralSum = 0;
+    public static double liftStabilityThreshold = 0;
+    public static double liftLowPassGain = 0;
+
+    PIDCoefficientsEx liftPID = new PIDCoefficientsEx(liftKp, liftKi, liftKd,
+            liftMaxIntegralSum, liftStabilityThreshold, liftLowPassGain);
+
+    public PIDEx lift = new PIDEx(liftPID);
+
+    public Coefficients() {
+
+    }
 }

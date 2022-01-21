@@ -39,7 +39,7 @@ public class TempTest extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         if(DashTelemetryEnabled) telemetry = dashboard.getTelemetry();
         expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
-        Battery.expansionHub = expansionHub;
+        Battery.expansionHub1 = expansionHub;
         expansionHub.setLedColor(0,0,0);
 
         telemetry.addLine("Controller Test");

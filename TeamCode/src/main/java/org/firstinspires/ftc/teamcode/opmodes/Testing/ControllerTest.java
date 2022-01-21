@@ -43,7 +43,7 @@ public class ControllerTest extends LinearOpMode {
         expansionHub = hardwareMap.get(ExpansionHubEx.class, HubName);
         Driver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         Blinkin.Driver = Driver;
-        Battery.expansionHub = expansionHub;
+        Battery.expansionHub1 = expansionHub;
         Log.i("GP-A", Float.toString(gamepad1.left_stick_x));
         Gamepad gp1 = gamepad1;
         Gamepad gp2 = gamepad2;

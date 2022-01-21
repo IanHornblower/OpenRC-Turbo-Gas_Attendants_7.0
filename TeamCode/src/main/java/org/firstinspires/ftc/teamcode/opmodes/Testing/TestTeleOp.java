@@ -56,6 +56,8 @@ public class TestTeleOp extends LinearOpMode {
 
         while(opModeIsActive()) {
 
+            robot.freightDetector.run();
+
             TelemetryPacket packet = new TelemetryPacket();
 
             FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -94,9 +96,6 @@ public class TestTeleOp extends LinearOpMode {
 
              */
 
-
-
-           robot.lift.setLiftPID(new MiniPID(p, i, d));
            robot.lift.setPosition(position);
 
            telemetry.addData("State", robot.getLift().getCurrentPosition());
@@ -116,7 +115,7 @@ public class TestTeleOp extends LinearOpMode {
             }
 
             if(gamepad1.cross) {
-
+                robot.freightDetector.close();
             }
 
 
