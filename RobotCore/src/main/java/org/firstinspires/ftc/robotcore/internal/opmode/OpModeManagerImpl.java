@@ -745,7 +745,11 @@ public class OpModeManagerImpl implements OpModeServices, OpModeManagerNotifier 
     try {
       detectStuck(activeOpMode.msStuckDetectLoop, "loop()", new Runnable() {
         @Override public void run() {
-          activeOpMode.loop();
+          try {
+            activeOpMode.loop();
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
         }});
     } catch (ForceStopException e) {
       /*

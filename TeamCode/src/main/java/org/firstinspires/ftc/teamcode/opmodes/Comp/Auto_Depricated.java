@@ -1,31 +1,23 @@
 package org.firstinspires.ftc.teamcode.opmodes.Comp;
 
-import static org.firstinspires.ftc.teamcode.hardware.lift.LIFT.*;
-import static org.firstinspires.ftc.teamcode.util.Time.await;
-import static org.firstinspires.ftc.teamcode.util.Time.timeout;
-import static org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera.position.*;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamServer;
-import org.firstinspires.ftc.robotcore.internal.system.RefCounted;
 import org.firstinspires.ftc.teamcode.PoseStorage;
 import org.firstinspires.ftc.teamcode.control.CornettCore;
-import org.firstinspires.ftc.teamcode.control.Function;
-import org.firstinspires.ftc.teamcode.control.Trajectory;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.hardware.lift;
-import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.math.Pose2D;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
-
 import org.firstinspires.ftc.teamcode.vision.FreightFrenzyCamera;
 
-import java.util.ArrayList;
+import static org.firstinspires.ftc.teamcode.hardware.lift.LIFT.*;
+import static org.firstinspires.ftc.teamcode.util.Time.await;
 
+@Disabled
 @Autonomous(name = "All Auto(s)", group = "Comp")
-public class Auto extends LinearOpMode {
+public class Auto_Depricated extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -81,6 +73,7 @@ public class Auto extends LinearOpMode {
                         /*
                          * Init
                          */
+                        robot.lift.startServo();
                         robot.setSTART_POSITION(new Pose2D(63, 13, AngleUtil.interpretAngle(0)));
 
                         /*
@@ -89,10 +82,9 @@ public class Auto extends LinearOpMode {
 
                         await(400, ()-> robot.intakeSys.regularFreightIntake());
 
-                        motionProfile.runToPositionSync(40, 7, AngleUtil.interpretAngle(0), 1);
-                        robot.DriveTrain.stopDrive();
+                        motionProfile.runToPositionSync(40, 7, Math.toRadians(45), 1);
 
-                        motionProfile.rotateSync(Math.toRadians(45), Math.toRadians(5));
+                        robot.DriveTrain.stopDrive();
 
                         switch (pos) {
                             case D1:
@@ -101,16 +93,6 @@ public class Auto extends LinearOpMode {
                                 robot.lift.setPosition(lift.liftTwo);
                             case D3:
                                 robot.lift.setPosition(lift.liftThree);
-                        }
-
-                        // Wait 5 Seconds -> for testing not running
-
-                        sleep(5000);
-
-                        boolean runTo = true;
-
-                        if(runTo) {
-                            motionProfile.runTimeSync(0.3, 300);
                         }
 
                         sleep(500);
@@ -124,27 +106,16 @@ public class Auto extends LinearOpMode {
                             robot.lift.setPosition(lift.liftStart);
                         });
 
-                        boolean split1 = false;
+                        motionProfile.runToPositionSync(60, 7, Math.toRadians(90), 3);
 
-                        if(split1) {
-                            // Tune
-                            motionProfile.runToPositionSync(60, 7, Math.toRadians(45), 1);
-                            robot.DriveTrain.stopDrive();
-
-                            motionProfile.rotateSync(Math.toRadians(90), Math.toRadians(5));
-                        }
-                        else {
-                            // Tune
-                            motionProfile.runToPositionSync(60, 7, Math.toRadians(90), 3);
-                        }
-
+                        robot.DriveTrain.stopDrive();
 
                         robot.DriveTrain.setMotorPowers(1, 0, 0);
                         sleep(1500);
                         robot.stopDrive();
 
                         robot.DriveTrain.setMotorPowers(0, 1, 0);
-                        sleep(1500);
+                        sleep(2000);
                         robot.stopDrive();
 
                         stop();
@@ -162,12 +133,69 @@ public class Auto extends LinearOpMode {
 
                         await(400, ()-> robot.intakeSys.regularFreightIntake());
 
-                        // Tune
-
                         motionProfile.runToPositionSync(38, -28, AngleUtil.interpretAngle(0),1);
                         robot.DriveTrain.stopDrive();
+                        motionProfile.rotateSync(Math.toRadians(300), Math.toRadians(5));
 
-                        motionProfile.rotateSync(AngleUtil.interpretAngle(300), Math.toRadians(5));
+                        //switch (pos) {
+                        //    case D1:
+                        //        robot.lift.setPosition(lift.liftOne);
+                        //    case D2:
+                        //        robot.lift.setPosition(lift.liftTwo);
+                        //    case D3:
+                        //        robot.lift.setPosition(lift.liftThree);
+                        //}
+
+                        //sleep(500);
+                        //robot.lift.drop();
+                        //sleep(1500);
+
+                        //robot.lift.primeServo();
+
+                        //await(500, ()-> {
+                        //    robot.lift.startServo();
+                        //    robot.lift.setPosition(lift.liftStart);
+                        //});
+
+                        motionProfile.runToPositionSync(50, -62, Math.toRadians(0), 1);
+                        robot.DriveTrain.stopDrive();
+
+                        robot.DriveTrain.setMotorPowers(-0.2, -0.3);
+                        sleep(400);
+                        robot.DriveTrain.stopDrive();
+
+                        sleep(500);
+                        robot.getDuck().setPower(-0.5);
+                        sleep(3000);
+                        robot.getDuck().setPower(0.0);
+
+                        robot.intakeSys.raiseIntake();
+
+                        motionProfile.runToPositionSync(36, -59, Math.toRadians(0), 2);
+                        robot.DriveTrain.stopDrive();
+
+                        stop();
+                        break;
+                }
+                break;
+            case BLUE:
+                switch(MatchConfig.park) {
+                    case WAREHOUSE:
+                        /*
+                         * Init
+                         */
+                        robot.lift.startServo();
+                        robot.setSTART_POSITION(new Pose2D(-63, 13, AngleUtil.interpretAngle(180)));
+
+                        /*
+                         * Run Auto
+                         */
+
+                        await(400, ()-> robot.intakeSys.regularFreightIntake());
+
+                        motionProfile.runToPositionSync(-40, 7, Math.toRadians(135), 1);
+
+                        robot.DriveTrain.stopDrive();
 
                         switch (pos) {
                             case D1:
@@ -178,59 +206,85 @@ public class Auto extends LinearOpMode {
                                 robot.lift.setPosition(lift.liftThree);
                         }
 
-                        // Wait 5 Seconds -> for testing not running
-
-                        sleep(5000);
-
-                        runTo = true;
-
-                        if(runTo) {
-                            motionProfile.runTimeSync(0.3, 300);
-                        }
-
                         sleep(500);
                         robot.lift.drop();
-                        sleep(1200);
+                        sleep(1500);
 
                         robot.lift.primeServo();
+
                         await(500, ()-> {
                             robot.lift.startServo();
                             robot.lift.setPosition(lift.liftStart);
                         });
 
-                        // Tune
+                        motionProfile.runToPositionSync(-60, 7, Math.toRadians(90), 3);
 
-                        robot.DriveTrain.setMotorPowers(-0.7, -0.7); //may need to move more to the left or right
-                        sleep(1200);   // Tune so it hits the duck wheel
+                        robot.DriveTrain.setMotorPowers(-1, 0, 0);
+                        sleep(1500);
+                        robot.stopDrive();
+
+                        robot.DriveTrain.setMotorPowers(0, 1, 0);
+                        sleep(1500);
+
+                        robot.stopDrive();
+                        stop();
+                        break;
+                    case STORAGE:
+                        /*
+                         * Init
+                         */
+                        robot.lift.startServo();
+                        robot.setSTART_POSITION(new Pose2D(-63, -36, AngleUtil.interpretAngle(180)));
+
+                        /*
+                         * Run Auto
+                         */
+
+                        await(400, ()-> robot.intakeSys.regularFreightIntake());
+
+                        motionProfile.runToPositionSync(-40, -30, Math.toRadians(225),1);
+
                         robot.DriveTrain.stopDrive();
 
-                        robot.DriveTrain.setMotorPowers(-0.3, -0.3); // Maybe remove
+                        switch (pos) {
+                            case D1:
+                                robot.lift.setPosition(lift.liftOne);
+                            case D2:
+                                robot.lift.setPosition(lift.liftTwo);
+                            case D3:
+                                robot.lift.setPosition(lift.liftThree);
+                        }
 
                         sleep(500);
+                        robot.lift.drop();
+                        sleep(1500);
+
+                        robot.lift.primeServo();
+
+                        await(500, ()-> {
+                                    robot.lift.startServo();
+                                    robot.lift.setPosition(lift.liftStart);
+                                });
+
+                        motionProfile.runToPositionSync(-50, -62, Math.toRadians(180), 1);
                         robot.DriveTrain.stopDrive();
 
-                        robot.getDuck().setPower(-0.5);
+                        robot.DriveTrain.setMotorPowers(-0.2, -0.3);
+                        sleep(400);
+                        robot.DriveTrain.stopDrive();
+
+                        sleep(500);
+                        robot.getDuck().setPower(0.5);
                         sleep(3000);
                         robot.getDuck().setPower(0.0);
 
                         robot.intakeSys.raiseIntake();
 
-                        // Tune
-                        motionProfile.runToPositionSync(36, -59, AngleUtil.interpretAngle(300), 1);
+                        motionProfile.runToPositionSync(-36, -59, Math.toRadians(180), 2);
                         robot.DriveTrain.stopDrive();
-
-                        motionProfile.rotateSync(Math.toRadians(90), Math.toRadians(5));
-
                         stop();
-                        break;
-                }
-                break;
-            case BLUE:
-                switch(MatchConfig.park) {
-                    case WAREHOUSE:
 
-                    case STORAGE:
-                        
+                        break;
                 }
                 break;
         }

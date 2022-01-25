@@ -118,7 +118,7 @@ public abstract class OpMode {
    * <p>
    * This method will be called repeatedly in a loop while this op mode is running
    */
-  abstract public void loop();
+  abstract public void loop() throws InterruptedException;
 
   /**
    * User defined stop method

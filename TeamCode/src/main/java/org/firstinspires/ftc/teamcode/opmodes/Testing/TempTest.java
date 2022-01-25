@@ -2,6 +2,7 @@
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Battery;
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 
 import java.math.BigInteger;
 
+@Disabled
 @TeleOp(name="Temperature Test", group="Testing")
 @Config
 public class TempTest extends LinearOpMode {

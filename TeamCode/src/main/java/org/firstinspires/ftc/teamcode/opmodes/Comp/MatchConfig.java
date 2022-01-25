@@ -8,6 +8,6 @@ public class MatchConfig {
     public enum SIDE {RED, BLUE}
 
     public static PARK park = PARK.STORAGE;
-    public static SIDE side = SIDE.BLUE;
+    public static SIDE side = SIDE.RED;
 
 }

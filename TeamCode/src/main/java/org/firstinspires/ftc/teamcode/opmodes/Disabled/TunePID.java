@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.Controller;
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
 import static org.firstinspires.ftc.teamcode.util.MathUtil.roundPlaces;
 
+@Disabled
 @Config
 @TeleOp(name = "TunePID", group = "Tuning")
 public class TunePID extends LinearOpMode {
@@ -24,8 +25,8 @@ public class TunePID extends LinearOpMode {
     type PIDSelector;
 
 
-    public static double scaleBox = 3;
-    public static long waitPeriod = 0;
+    public static double scaleBox = 2;
+    public static double waitPeriod = 200;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -68,56 +69,64 @@ public class TunePID extends LinearOpMode {
         telemetry.addData("Tuning", PIDSelector);
         telemetry.update();
 
+        CornettCore motionProfile = new CornettCore(robot);
+
+        robot.intakeSys.regularFreightIntake();
+        robot.lift.startServo();
+
         waitForStart();
 
         while(opModeIsActive()) {
-
-            CornettCore motionProfile = new CornettCore(robot);
-
             switch (PIDSelector) {
                 case ROTATIONAL:
                     robot.updateOdometry();
+                    robot.PIDEx.update();
 
                     motionProfile.rotateSync(Math.toRadians(0), Math.toRadians(0.5));
 
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
 
                     motionProfile.rotateSync(Math.toRadians(90), Math.toRadians(0.5));
-                    //break;
+                    sleep((long) waitPeriod);
+
+                    break;
                 case DIRECTIONAL:
                     robot.updateOdometry();
+                    robot.PIDEx.update();
 
                     motionProfile.runToPositionSync(10*scaleBox, 0, Math.toRadians(90), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(10*scaleBox, 10*scaleBox, Math.toRadians(90), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(0, 10*scaleBox, Math.toRadians(90), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(0, 0, Math.toRadians(90), 0.5);
-                    sleep(waitPeriod);
-
+                    sleep((long) waitPeriod);
+                    break;
                 case DIFFY:
                     robot.updateOdometry();
+                    robot.PIDEx.update();
 
                     joe.retrace().followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.FORWARD, 8, 1);
 
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
 
                     joe.retrace().followPath(Trajectory.PATH_TYPE.PURE_PURSUIT, CornettCore.DIRECTION.BACKWARD, 8, 1);
 
-                    sleep(waitPeriod);
-
+                    sleep((long) waitPeriod);
+                    break;
                 case BOTH:
                     robot.updateOdometry();
+                    robot.PIDEx.update();
 
                     motionProfile.runToPositionSync(10*scaleBox, 0, Math.toRadians(0), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(10*scaleBox, 10*scaleBox, Math.toRadians(90), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(0, 10*scaleBox, Math.toRadians(180), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     motionProfile.runToPositionSync(0, 0, Math.toRadians(270), 0.5);
-                    sleep(waitPeriod);
+                    sleep((long) waitPeriod);
                     break;
 
                 default:

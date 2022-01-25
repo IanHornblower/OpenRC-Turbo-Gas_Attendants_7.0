@@ -13,7 +13,7 @@ import org.checkerframework.checker.units.qual.A;
 @Config
 public class Coefficients {
 
-    public static double turnKp = 0;
+    public static double turnKp = 0.1; // May need to increase or decrees
     public static double turnKi = 0;
     public static double turnKd = 0;
 
@@ -23,7 +23,7 @@ public class Coefficients {
 
     public AngleController turn = new AngleController(turnPIDBasic);
 
-    public static double xKp = 0;
+    public static double xKp = 0.14;
     public static double xKi = 0;
     public static double xKd = 0;
     public static double xMaxIntegralSum = 0;
@@ -35,7 +35,7 @@ public class Coefficients {
 
     public PIDEx x = new PIDEx(xPID);
 
-    public static double yKp = 0;
+    public static double yKp = 0.14;
     public static double yKi = 0;
     public static double yKd = 0;
     public static double yMaxIntegralSum = 0;
@@ -47,7 +47,7 @@ public class Coefficients {
 
     public PIDEx y = new PIDEx(yPID);
 
-    public static double headingKp = 0;
+    public static double headingKp = 0.4;
     public static double headingKi = 0;
     public static double headingKd = 0;
 
@@ -79,9 +79,10 @@ public class Coefficients {
 
     public PIDEx differentialForward = new PIDEx(differentialForwardPID);
 
-    public static double liftKp = 0;
-    public static double liftKi = 0;
-    public static double liftKd = 0;
+    public static double liftKp = 0.08;
+    public static double liftKi = 0.0;
+    public static double liftKd = 0.0;
+    public static double liftKf = 0.08  ;
     public static double liftMaxIntegralSum = 0;
     public static double liftStabilityThreshold = 0;
     public static double liftLowPassGain = 0;
@@ -93,5 +94,59 @@ public class Coefficients {
 
     public Coefficients() {
 
+    }
+
+    public void update() {
+        // Lift
+
+        liftPID = new PIDCoefficientsEx(liftKp, liftKi, liftKd,
+                liftMaxIntegralSum, liftStabilityThreshold, liftLowPassGain);
+
+        lift = new PIDEx(liftPID);
+
+        // Diffy Power
+
+        differentialForwardPID = new PIDCoefficientsEx(differentialForwardKp, differentialForwardKi, differentialForwardKd,
+                differentialForwardMaxIntegralSum, differentialForwardStabilityThreshold, differentialForwardLowPassGain);
+
+        differentialForward = new PIDEx(differentialForwardPID);
+
+        // Diffy Turn
+
+        differentialTurnPID = new PIDCoefficients(differentialTurnKp, differentialTurnKi, differentialTurnKd);
+
+        differentialTurnBasicPID = new BasicPID(differentialTurnPID);
+
+        differentialTurn = new AngleController(differentialTurnBasicPID);
+
+        // Heading
+
+        headingPID = new PIDCoefficients(headingKp, headingKi, headingKd);
+
+        headingBasicPID = new BasicPID(headingPID);
+
+        AngleController heading = new AngleController(headingBasicPID);
+
+        // Y
+
+        yPID = new PIDCoefficientsEx(yKp, yKi, yKd,
+                yMaxIntegralSum, yStabilityThreshold, yLowPassGain);
+
+        y = new PIDEx(yPID);
+
+        // X
+
+        xPID = new PIDCoefficientsEx(xKp, xKi, xKd,
+                xMaxIntegralSum, xStabilityThreshold, xLowPassGain);
+
+        x = new PIDEx(xPID);
+
+        // Turn
+
+        turnPID = new PIDCoefficients(turnKp, turnKi, turnKd);
+
+        turnPIDBasic = new BasicPID(turnPID);
+
+        turn = new AngleController(turnPIDBasic);
     }
 }

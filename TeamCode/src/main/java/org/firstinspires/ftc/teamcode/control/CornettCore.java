@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 
+import static org.firstinspires.ftc.teamcode.util.Init.init;
+
 @Config
 public class CornettCore extends OpMode {
 
@@ -148,18 +150,34 @@ public class CornettCore extends OpMode {
 
         direction = Curve.getDirection(robot.pos.getHeading(), heading);
 
-        double xRawPower = Math.cos(theta);  // Since This is augmenting the PID Output it may be beneficial to change this to something else.
-        double yRawPower = Math.sin(theta);  // Since This is augmenting the PID Output it may be beneficial to change this to something else.
+        double max = Math.max(Math.sin(theta), Math.cos(theta));
 
-        xPIDOutput = Math.abs(PIDEx.x.calculate(x, robot.pos.x));
-        yPIDOutput = Math.abs(PIDEx.y.calculate(y, robot.pos.y));
+        double xRawPower = Math.abs(Math.cos(theta) * max);
+        double yRawPower = Math.abs(Math.sin(theta) * max);
+
+        xPIDOutput = PIDEx.x.calculate(x, robot.pos.x);
+        yPIDOutput = PIDEx.y.calculate(y, robot.pos.y);
         headingPIDOutput = Math.abs(PIDEx.heading.calculate(heading, robot.pos.getHeading()));
 
-        double xControlPoint = xRawPower * xPIDOutput * xControlPointMultiplier;
-        double yControlPoint = yRawPower * yPIDOutput * yControlPointMultiplier;
+        double xControlPoint = 1 * xPIDOutput * xControlPointMultiplier;
+        double yControlPoint = 1 * yPIDOutput * yControlPointMultiplier;
         double headingControlPoint = direction * headingPIDOutput * headingControlPointMultiplier;
 
         robot.DriveTrain.driveFieldCentric(xControlPoint, yControlPoint, headingControlPoint);
+
+        telemetry = robot.dashboard.getTelemetry();
+
+        telemetry.addData("robot x", robot.pos.x);
+        telemetry.addData("robot y", robot.pos.y);
+        telemetry.addData("x", x);
+        telemetry.addData("y", y);
+        telemetry.addData("x error", x - robot.pos.x);
+        telemetry.addData("y error", y - robot.pos.y);
+        telemetry.addData("Theta", Math.toDegrees(theta));
+        telemetry.addData("Raw Powers: x = ", xRawPower + "\t y = " + yRawPower);
+        telemetry.addData("PID outputs: x = ", xPIDOutput + "\t y = " + yPIDOutput);
+        telemetry.addData("Control Points: x = ", xControlPoint + "\t y = " + yControlPoint);
+        telemetry.update();
     }
 
     public void runToPosition(double x, double y, double heading) throws InterruptedException {
@@ -182,7 +200,7 @@ public class CornettCore extends OpMode {
                     x, y, heading,
                     xPID, yPID, headingPID,
                     xControlPointMultiplier, yControlPointMultiplier, headingControlPointMultiplier);
-        } while(distance > allowableDistanceError || angleDistance > Math.toRadians(allowableDistanceError));
+        } while(distance > allowableDistanceError); //  ||  angleDistance > Math.toRadians(allowableDistanceError));
     }
 
     public synchronized void runToPositionSync(double x, double y, double heading, double allowableDistanceError) throws InterruptedException {
@@ -238,6 +256,40 @@ public class CornettCore extends OpMode {
             case BACKWARD:
                 setDifMotorReverse(pos.x, pos.y);
         }
+    }
+
+    public void runEncoders(double power, double distance) {
+        double left = robot.getLeftEncoder().getCurrentPosition();
+
+        double state = 0;
+        if(distance > state) {
+           state = Math.abs(robot.getLeftEncoder().getCurrentPosition() - left);
+           robot.DriveTrain.setMotorPowers(power, power);
+            }
+        }
+
+    public void runTime(double power, double time) {
+        new Thread(()-> {
+            robot.DriveTrain.setMotorPowers(power, power);
+            try {
+                Thread.sleep((long)time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            robot.DriveTrain.stopDrive();
+        }).start();
+    }
+
+    public void runTimeSync(double power, double time) {
+        new Thread(()-> {
+            robot.DriveTrain.setMotorPowers(power, power);
+            try {
+                Thread.sleep((long)time);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            robot.DriveTrain.stopDrive();
+        }).start();
     }
 
     @Override

@@ -32,13 +32,16 @@ import org.firstinspires.ftc.teamcode.util.MiniPID;
 @TeleOp(name = "TeleOp", group = "Comp")
 public class TeleOperation extends LinearOpMode {
 
-    public static double movementSens = 1;
-    public static double turnSens = 1;
+    public static double movementSens = 0.78;
+    public static double turnSens = 0.59;
+
+    public static double slowed_movementSens = 0.41;
+    public static double slowed_turnSens = 0.29;
 
     public static double position = liftStart;
     boolean down = true;
     boolean isMoving = false;
-    boolean intakeDown = true;
+    boolean intakeDown = false;
 
     private enum DRIVE {
         FIELD,
@@ -121,9 +124,19 @@ public class TeleOperation extends LinearOpMode {
                 if(gamepad1.square) driveState = DRIVE.ROBOT;
             }
             else {
-                robot.DriveTrain.setMotorPowers(leftX, leftY, turn);
+                robot.DriveTrain.setMotorPowers(leftX*movementSens, leftY*movementSens, turn*turnSens);
                 if(gamepad1.triangle) driveState = DRIVE.FIELD;
             }
+
+            if(gamepad1.left_trigger > 0.1) {
+                movementSens = slowed_movementSens;
+            }
+            else movementSens = 0.78;
+
+            if(gamepad1.right_trigger > 0.1) {
+                turnSens = slowed_turnSens;
+            }
+            else turnSens = 0.59;
 
             isMoving = leftX > 0.1 || leftY > 0.1;
 
@@ -194,6 +207,7 @@ public class TeleOperation extends LinearOpMode {
             //telemetry.addData("IMU ANGLE", robot.IMU.getIMUHeading() + "DEGREES: " + Math.toDegrees(robot.IMU.getIMUHeading()));
             //telemetry.addData("Robot ANGLE", robot.pos.heading + "DEGREES: " + Math.toDegrees(robot.pos.heading));
 
+            telemetry.addData("lift", robot.getLift().getCurrentPosition());
             telemetry.addData("Lift Level", lift[0].toString());
             telemetry.addData("Drive State", driveState.toString());
             telemetry.addData("Side", MatchConfig.side.toString());

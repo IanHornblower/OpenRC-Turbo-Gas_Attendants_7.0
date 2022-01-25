@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import static org.firstinspires.ftc.teamcode.control.Coefficients.liftKf;
 import static org.firstinspires.ftc.teamcode.util.Time.timeout;
 
 import android.util.Log;
@@ -30,17 +31,17 @@ public class lift {
     MiniPID liftPID;
     Robot robot;
 
-    public static double threshold = 10;
+    public static double threshold = 50;
 
-    public static double liftStart = 0;
-    public static double liftPrimed = 1000;
-    public static double liftOne = 500;
+    public static double liftStart = 50;
+    public static double liftOne = 350;
     public static double liftTwo = 850;
-    public static double liftThree = 1000;
+    public static double liftThree = 1050;
+    public static double liftPrimed = liftThree;
 
-    public static double servoStart = 0.77;
+    public static double servoStart = 0.8;
     public static double servoPrimed = 0.72;
-    public static double servoDropped = 0.3;
+    public static double servoDropped = 0.37;
     public static double servoSemiDrop = 0.43;
 
     public enum LIFT {
@@ -90,9 +91,16 @@ public class lift {
     }
     
     public void setPosition(double position) {
+        if(Math.abs(robot.getLift().getCurrentPosition() - position) > threshold) {
+            setRawPosition(position);
+        }
+        else robot.getLift().setPower(0.0);
+    }
+
+    public void setRawPosition(double position) {
         double liftOutput = robot.PIDEx.lift.calculate(position, robot.getLift().getCurrentPosition());
 
-        robot.getLift().setPower(-liftOutput);
+        robot.getLift().setPower(-liftOutput*liftKf);
     }
 
     public void prime() {

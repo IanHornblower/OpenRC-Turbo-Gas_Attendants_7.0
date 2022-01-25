@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.Testing;
 import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.Color;
 
 import static com.qualcomm.robotcore.hardware.Gamepad.ID_UNASSOCIATED;
 
+@Disabled
 @Config
 @TeleOp(name="Controller Test", group="Testing")
 public class ControllerTest extends LinearOpMode {

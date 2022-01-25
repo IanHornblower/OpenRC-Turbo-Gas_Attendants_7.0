@@ -36,7 +36,8 @@ public class Robot extends OpMode {
     public Coefficients PIDEx;
 
     public FreightDetector freightDetector;
-    public ColorRangeSensor freightSensor;
+    public ColorSensor freightSensor_color;
+    public DistanceSensor freightSensor_distance;
 
     private double previousHeading;
 
@@ -90,6 +91,7 @@ public class Robot extends OpMode {
         liftMotor = hardwareMap.dcMotor.get("lift");
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         boxServo = hardwareMap.servo.get("boxServo");
@@ -102,7 +104,8 @@ public class Robot extends OpMode {
 
         PIDEx = new Coefficients();
 
-        freightSensor = hardwareMap.get(ColorRangeSensor.class, "color");
+        freightSensor_color = hardwareMap.get(ColorSensor.class, "color");
+        freightSensor_distance = hardwareMap.get(DistanceSensor.class, "color");
 
         duck = hardwareMap.dcMotor.get("duck");
         duck.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -148,9 +151,14 @@ public class Robot extends OpMode {
         }
     }
 
-    public ColorRangeSensor getFreightSensor() {
-        return freightSensor;
+    public ColorSensor getFreightSensor_color() {
+        return freightSensor_color;
     }
+
+    public DistanceSensor getFreightSensor_distance() {
+        return freightSensor_distance;
+    }
+
     public HardwareMap getHardwareMap() {
         return hwMap;
     }
@@ -270,6 +278,7 @@ public class Robot extends OpMode {
     }
 
     public void updateOdometry() {
+        this.PIDEx.update();
         currentRightPosition = rightEncoder.getCurrentPosition(); // Invert in Necessary
         currentLeftPosition = leftEncoder.getCurrentPosition(); // Invert in Necessary
         currentLateralPosition = lateralEncoder.getCurrentPosition(); // Invert in Necessary

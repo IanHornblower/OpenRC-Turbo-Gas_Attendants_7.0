@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.util.MiniPID;
 import static org.firstinspires.ftc.teamcode.util.Controller.*;
 import static org.firstinspires.ftc.teamcode.util.Time.await;
 
+@Disabled
 @Config
 @TeleOp(name = "Testing OpMode", group = "Testing")
 public class TestTeleOp extends LinearOpMode {
@@ -67,6 +68,7 @@ public class TestTeleOp extends LinearOpMode {
 
             robot.updateOdometry();
             robot.updateAccumulatedHeading();
+            robot.PIDEx.update();
 
             double leftX = AngleUtil.powRetainingSign(Controller.deadZone(gamepad1.left_stick_x, 0.1), LEFT_TRIGGER_X_POW);
             double leftY = AngleUtil.powRetainingSign(Controller.deadZone(-gamepad1.left_stick_y, 0.1), LEFT_TRIGGER_Y_POW);
@@ -102,6 +104,8 @@ public class TestTeleOp extends LinearOpMode {
            telemetry.addData("Refrence", position);
            telemetry.addData("Error", position - robot.getLift().getCurrentPosition());
 
+           telemetry.addData("Distance", robot.freightDetector.distance());
+
 
             if(gamepad1.square) {
                 robot.lift.drop();
@@ -117,6 +121,8 @@ public class TestTeleOp extends LinearOpMode {
             if(gamepad1.cross) {
                 robot.freightDetector.close();
             }
+
+            robot.intakeSys.run(gamepad2.left_trigger, gamepad2.right_trigger, true);
 
 
             //telemetry.addData("\nXYH", robot.pos.toString());
