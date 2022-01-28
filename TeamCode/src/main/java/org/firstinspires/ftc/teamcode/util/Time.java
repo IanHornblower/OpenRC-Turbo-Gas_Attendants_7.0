@@ -53,6 +53,27 @@ public class Time {
     }
 
     /**
+     * Waits for "mills" milliseconds then runs whatever x contains
+     * @param mills amount of time till execution
+     * @param x method to be executed at "await" milliseconds
+     */
+
+    public static void wait(double mills, Executor x) throws InterruptedException {
+        init(()-> startTime = System.nanoTime());
+
+        try {
+            x.method();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        while(timeSinceStart < mills*1e6) {
+            currentTime = System.nanoTime();
+            timeSinceStart = currentTime - startTime;
+        }
+    }
+
+    /**
      * Synchronous Function which run for "mills" milliseconds then stop
      * @param mills duration of milliseconds
      * @param x methods to be executed during loop

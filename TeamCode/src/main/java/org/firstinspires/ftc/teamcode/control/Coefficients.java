@@ -8,12 +8,10 @@ import com.ThermalEquilibrium.homeostasis.Parameters.PIDCoefficientsEx;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.checkerframework.checker.units.qual.A;
-
 @Config
 public class Coefficients {
 
-    public static double turnKp = 0.1; // May need to increase or decrees
+    public static double turnKp = 1;
     public static double turnKi = 0;
     public static double turnKd = 0;
 
@@ -23,7 +21,7 @@ public class Coefficients {
 
     public AngleController turn = new AngleController(turnPIDBasic);
 
-    public static double xKp = 0.14;
+    public static double xKp = 0.1;
     public static double xKi = 0;
     public static double xKd = 0;
     public static double xMaxIntegralSum = 0;
@@ -35,7 +33,7 @@ public class Coefficients {
 
     public PIDEx x = new PIDEx(xPID);
 
-    public static double yKp = 0.14;
+    public static double yKp = 0.1;
     public static double yKi = 0;
     public static double yKd = 0;
     public static double yMaxIntegralSum = 0;

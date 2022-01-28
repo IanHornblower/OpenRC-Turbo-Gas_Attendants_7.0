@@ -4,13 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
-import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 import org.firstinspires.ftc.teamcode.math.Curve;
 import org.firstinspires.ftc.teamcode.math.Point;
 import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import org.firstinspires.ftc.teamcode.util.MiniPID;
 
+import static org.firstinspires.ftc.teamcode.control.Coefficients.*;
 import static org.firstinspires.ftc.teamcode.util.Init.init;
 
 @Config
@@ -24,21 +24,21 @@ public class CornettCore extends OpMode {
 
     Coefficients PIDEx = new Coefficients();
 
-    MiniPID defaultTurnPID = new MiniPID(0.5, 0, 0);
+    MiniPID defaultTurnPID = new MiniPID(turnKp, turnKi, turnKd);
 
     public double defaultTurnOutputMultiplier = 1;
 
     public static double xP = 0.17;
     public static double yP = 0.17;
-    public static double headingP = 0.5; // 0.04
+    public static double headingP = turnKp; // 0.04
 
     public static double xI = 0;
     public static double yI = 0;
-    public static double headingI = 0.001; // 0.01
+    public static double headingI = turnKi; // 0.01
 
     public static double xD = 0;
     public static double yD = 0;
-    public static double headingD = 0.0; // 0.01
+    public static double headingD = turnKd; // 0.01
 
     MiniPID defaultXPID = new MiniPID(xP, xI,xD);
     MiniPID defaultYPID = new MiniPID(yP, yI,yD);
@@ -85,7 +85,6 @@ public class CornettCore extends OpMode {
     }
 
     public void rotateRaw(double heading, MiniPID turnPID, double outputMultiplier) {
-        /*
         robot.updateOdometry();
 
         turnPID.setSetpoint(heading);
@@ -97,9 +96,7 @@ public class CornettCore extends OpMode {
         turnPIDOutput = turnPID.getOutput(AngleUtil.deNormalizeAngle(robot.pos.getHeading()));
         output = direction * turnPIDOutput * outputMultiplier;
 
-         */
-
-        output = PIDEx.turn.calculate(heading, robot.pos.getHeading());
+        //output = PIDEx.turn.calculate(heading, robot.IMU.getIMUHeading());
 
         robot.DriveTrain.setMotorPowers(0, 0, output);
     }
@@ -148,8 +145,6 @@ public class CornettCore extends OpMode {
 
         double theta = Curve.getAngle(robot.pos, new Point(x, y));
 
-        direction = Curve.getDirection(robot.pos.getHeading(), heading);
-
         double max = Math.max(Math.sin(theta), Math.cos(theta));
 
         double xRawPower = Math.abs(Math.cos(theta) * max);
@@ -157,27 +152,34 @@ public class CornettCore extends OpMode {
 
         xPIDOutput = PIDEx.x.calculate(x, robot.pos.x);
         yPIDOutput = PIDEx.y.calculate(y, robot.pos.y);
-        headingPIDOutput = Math.abs(PIDEx.heading.calculate(heading, robot.pos.getHeading()));
+
+        headingPID.setSetpoint(heading);
+        headingPID.setOutputLimits(-1, 1);
+
+        headingPID.setError(Curve.getShortestDistance(robot.pos.getHeading(), heading));
+
+        direction = Curve.getDirection(robot.pos.getHeading(), heading);
+        turnPIDOutput = headingPID.getOutput(AngleUtil.deNormalizeAngle(robot.pos.getHeading()));
 
         double xControlPoint = 1 * xPIDOutput * xControlPointMultiplier;
         double yControlPoint = 1 * yPIDOutput * yControlPointMultiplier;
-        double headingControlPoint = direction * headingPIDOutput * headingControlPointMultiplier;
+        double headingControlPoint = direction * turnPIDOutput * headingControlPointMultiplier;
 
         robot.DriveTrain.driveFieldCentric(xControlPoint, yControlPoint, headingControlPoint);
 
-        telemetry = robot.dashboard.getTelemetry();
+        //telemetry = robot.dashboard.getTelemetry();
 
-        telemetry.addData("robot x", robot.pos.x);
-        telemetry.addData("robot y", robot.pos.y);
-        telemetry.addData("x", x);
-        telemetry.addData("y", y);
-        telemetry.addData("x error", x - robot.pos.x);
-        telemetry.addData("y error", y - robot.pos.y);
-        telemetry.addData("Theta", Math.toDegrees(theta));
-        telemetry.addData("Raw Powers: x = ", xRawPower + "\t y = " + yRawPower);
-        telemetry.addData("PID outputs: x = ", xPIDOutput + "\t y = " + yPIDOutput);
-        telemetry.addData("Control Points: x = ", xControlPoint + "\t y = " + yControlPoint);
-        telemetry.update();
+        //telemetry.addData("robot x", robot.pos.x);
+        //telemetry.addData("robot y", robot.pos.y);
+        //telemetry.addData("x", x);
+        //telemetry.addData("y", y);
+        //telemetry.addData("x error", x - robot.pos.x);
+        //telemetry.addData("y error", y - robot.pos.y);
+        //telemetry.addData("Theta", Math.toDegrees(theta));
+        //telemetry.addData("Raw Powers: x = ", xRawPower + "\t y = " + yRawPower);
+        //telemetry.addData("PID outputs: x = ", xPIDOutput + "\t y = " + yPIDOutput);
+        //telemetry.addData("Control Points: x = ", xControlPoint + "\t y = " + yControlPoint);
+        //telemetry.update();
     }
 
     public void runToPosition(double x, double y, double heading) throws InterruptedException {
@@ -281,7 +283,6 @@ public class CornettCore extends OpMode {
     }
 
     public void runTimeSync(double power, double time) {
-        new Thread(()-> {
             robot.DriveTrain.setMotorPowers(power, power);
             try {
                 Thread.sleep((long)time);
@@ -289,7 +290,6 @@ public class CornettCore extends OpMode {
                 e.printStackTrace();
             }
             robot.DriveTrain.stopDrive();
-        }).start();
     }
 
     @Override

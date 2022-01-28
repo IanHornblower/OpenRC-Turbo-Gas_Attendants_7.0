@@ -17,17 +17,18 @@ import org.firstinspires.ftc.teamcode.util.AngleUtil;
 import java.util.ArrayList;
 @Config
 @Autonomous(name = "PID Testing", group = "Traj")
-public class TrajectoryAutoTest extends OpMode {
+public class TrajectoryAutoTest extends LinearOpMode {
 
     public static boolean turn = false;
     public static boolean loop = false;
     public static double interval = 0;
+    public static double angle = 90;
 
-    Robot robot = new Robot(hardwareMap);
-    CornettCore motionProfile = new CornettCore(robot);
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
+        Robot robot = new Robot(hardwareMap);
+        CornettCore motionProfile = new CornettCore(robot);
 
         robot.setSTART_POSITION(new Pose2D(0, 0, AngleUtil.interpretAngle(90)));
 
@@ -35,19 +36,27 @@ public class TrajectoryAutoTest extends OpMode {
 
         robot.intakeSys.regularFreightIntake();
         robot.lift.startServo();
-    }
 
-    @Override
-    public void loop() throws InterruptedException {
-        if (turn) {
-            motionProfile.rotateSync(Math.toRadians(0), Math.toRadians(1));
+        waitForStart();
+
+        while(opModeIsActive() && !isStopRequested()) {
+            if (turn) {
+                motionProfile.rotateSync(Math.toRadians(angle), Math.toRadians(1));
+            }
+
+            else {
+                motionProfile.runToPositionSync(24, 24, Math.toRadians(angle), 1);
+            }
+
+            if(!loop) stop();
+            sleep((long)interval);
+
+
+            Trajectory joe = new Trajectory(robot, robot.START_POSITION);
+
+            joe.addWaypoint(new Point(10, 10));
+            joe.addWaypoint(new Point(24, 24));
         }
 
-        else {
-            motionProfile.runToPositionSync(24, 24, Math.toRadians(90), 1);
-        }
-
-        if(!loop) stop();
-        sleep((long)interval);
     }
 }

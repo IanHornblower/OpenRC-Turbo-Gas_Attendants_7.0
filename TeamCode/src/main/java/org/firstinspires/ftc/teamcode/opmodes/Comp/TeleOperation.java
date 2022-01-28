@@ -48,6 +48,14 @@ public class TeleOperation extends LinearOpMode {
         ROBOT
     }
 
+    private enum Speed {
+        SLOW,
+        REGULAR,
+        FAST
+    }
+
+    Speed speed = Speed.REGULAR;
+
     public static enum LIFTSTATE {
         START,
         ONE,
@@ -83,6 +91,8 @@ public class TeleOperation extends LinearOpMode {
                 robot.getDuck().setDirection(DcMotorSimple.Direction.FORWARD);
                 modTheta = Math.PI/2+modTheta;
         }
+
+        robot.freightDetector.run();
 
         waitForStart();
 
@@ -128,17 +138,19 @@ public class TeleOperation extends LinearOpMode {
                 if(gamepad1.triangle) driveState = DRIVE.FIELD;
             }
 
-            if(gamepad1.left_trigger > 0.1) {
-                movementSens = slowed_movementSens;
-            }
-            else movementSens = 0.78;
-
-            if(gamepad1.right_trigger > 0.1) {
-                turnSens = slowed_turnSens;
-            }
-            else turnSens = 0.59;
-
             isMoving = leftX > 0.1 || leftY > 0.1;
+
+            if(gamepad1.cross) {
+                movementSens = 0.78;
+                turnSens = 0.59;
+                speed = Speed.REGULAR;
+            }
+
+            if(gamepad1.circle) {
+                movementSens = slowed_movementSens;
+                turnSens = slowed_turnSens;
+                speed = Speed.SLOW;
+            }
 
             // Duck Motor
             robot.spinMotor.run(gamepad2.left_bumper, gamepad2.right_bumper);
@@ -177,15 +189,6 @@ public class TeleOperation extends LinearOpMode {
                 }
             }
 
-            if(gamepad2.dpad_down) {
-                Coefficients.liftKp = 0; // Other
-                Coefficients.liftStabilityThreshold = 0.5; // Speed
-            }
-            else {
-                Coefficients.liftKp = 0; // Defaults
-                Coefficients.liftStabilityThreshold = 0.8; // Defaults
-            }
-
             if(gamepad2.circle && !down && !isMoving) {
                 robot.lift.drop();
             }
@@ -210,6 +213,7 @@ public class TeleOperation extends LinearOpMode {
             telemetry.addData("lift", robot.getLift().getCurrentPosition());
             telemetry.addData("Lift Level", lift[0].toString());
             telemetry.addData("Drive State", driveState.toString());
+            telemetry.addData("Drive Speed", speed.toString());
             telemetry.addData("Side", MatchConfig.side.toString());
             telemetry.update();
         }
